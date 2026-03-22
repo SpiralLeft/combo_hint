@@ -1,0 +1,28 @@
+{
+  "triggerTexts_weakendefence": [
+    "易伤",
+    "夹击",
+    "击倒",
+    "暴露"
+  ],
+  "color_weakendefence": "#FF6B6B",
+
+  "triggerTexts_weakenattack": [
+    "虚弱",
+    "弱化之触",
+    "星灭",
+    "王之凝视",
+    "共鸣",
+    "尖啸",
+    "凌虐",
+    "萎靡",
+    "黑暗镣铐"
+  ],
+  "color_weakenattack": "#6EC1FF",
+
+  "triggerTexts_other": [
+    "摧残",
+    "紧勒"
+  ],
+  "color_other": "#C9A6FF"
+}
