@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using HarmonyLib;
+using Godot;
+using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Hooks;
 using MegaCrit.Sts2.Core.Logging;
@@ -12,6 +15,7 @@ using MegaCrit.Sts2.Core.Modding;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Vfx;
+using MegaCrit.Sts2.Core.Runs;
 
 namespace ComboHint;
 
@@ -24,14 +28,71 @@ public static class ModEntry
 
     private const string ConfigFileName = "combo_hint.config.json";
 
+    private const double DefaultBubbleDurationSeconds = 1.8;
+
     public static IReadOnlyList<TriggerGroup> TriggerGroups { get; private set; } = new List<TriggerGroup>();
+
+    public static double BubbleDurationSeconds { get; private set; } = DefaultBubbleDurationSeconds;
+
+    public static bool EnableSinglePlayerHint { get; private set; } = true;
 
     public static void Initialize()
     {
         LoadConfig();
+        LoadManifestSettings();
+
         new Harmony(HarmonyId).PatchAll();
         int totalTriggerCount = TriggerGroups.Sum((TriggerGroup g) => g.TriggerTexts.Count);
-        Log.Info($"[ComboHint] initialized, trigger groups: {TriggerGroups.Count}, trigger texts: {totalTriggerCount}");
+        Log.Info($"[ComboHint] initialized, trigger groups: {TriggerGroups.Count}, trigger texts: {totalTriggerCount}, enableSinglePlayerHint: {EnableSinglePlayerHint}");
+    }
+
+    private static void LoadManifestSettings()
+    {
+        EnableSinglePlayerHint = true;
+        try
+        {
+            Mod? me = ModManager.AllMods.FirstOrDefault((Mod m) => m.manifest?.id == ModId);
+            if (me != null)
+            {
+                string manifestPath = Path.Combine(me.path, "combo_hint.json");
+                if (File.Exists(manifestPath))
+                {
+                    try
+                    {
+                        using JsonDocument doc = JsonDocument.Parse(File.ReadAllText(manifestPath));
+                        if (doc.RootElement.TryGetProperty("enableSinglePlayerHint", out JsonElement el))
+                        {
+                            if (el.ValueKind == JsonValueKind.True)
+                            {
+                                EnableSinglePlayerHint = true;
+                            }
+                            else if (el.ValueKind == JsonValueKind.False)
+                            {
+                                EnableSinglePlayerHint = false;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Warn($"[ComboHint] failed to parse manifest to read enableSinglePlayerHint: {ex}");
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Warn($"[ComboHint] error while checking single-player setting: {ex}");
+        }
+    }
+
+    public static bool IsHintEnabledInCurrentRun()
+    {
+        if (!EnableSinglePlayerHint && (RunManager.Instance?.IsSinglePlayerOrFakeMultiplayer ?? false))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private static void LoadConfig()
@@ -51,12 +112,14 @@ public static class ModEntry
             {
                 Log.Warn($"[ComboHint] config file not found at {configPath}, trigger groups will be empty.");
                 TriggerGroups = new List<TriggerGroup>();
+                BubbleDurationSeconds = DefaultBubbleDurationSeconds;
                 return;
             }
 
             string json = File.ReadAllText(configPath);
-            ModConfig? config = JsonSerializer.Deserialize<ModConfig>(json);
-            TriggerGroups = BuildTriggerGroups(config);
+            using JsonDocument doc = JsonDocument.Parse(json);
+            TriggerGroups = BuildTriggerGroups(doc.RootElement);
+            BubbleDurationSeconds = ReadBubbleDurationSeconds(doc.RootElement);
             if (TriggerGroups.Count == 0)
             {
                 Log.Warn("[ComboHint] no valid trigger groups in config, trigger groups will be empty.");
@@ -66,58 +129,191 @@ public static class ModEntry
         {
             Log.Error($"[ComboHint] failed to load config: {ex}");
             TriggerGroups = new List<TriggerGroup>();
+            BubbleDurationSeconds = DefaultBubbleDurationSeconds;
         }
     }
 
-    private static List<TriggerGroup> BuildTriggerGroups(ModConfig? config)
+    private static List<TriggerGroup> BuildTriggerGroups(JsonElement root)
     {
-        if (config == null)
+        List<TriggerGroup> groups = new List<TriggerGroup>();
+        foreach (JsonProperty property in root.EnumerateObject())
         {
-            return new List<TriggerGroup>();
+            if (!property.Name.StartsWith("triggerTexts_", StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            List<string>? triggerTexts = ReadStringArray(property.Value);
+            string suffix = property.Name.Substring("triggerTexts_".Length);
+            string colorKey = "color_" + suffix;
+            string? color = null;
+            if (root.TryGetProperty(colorKey, out JsonElement colorElement) && colorElement.ValueKind == JsonValueKind.String)
+            {
+                color = colorElement.GetString();
+            }
+
+            TriggerGroup group = TriggerGroup.From(triggerTexts, color);
+            if (group.TriggerTexts.Count > 0)
+            {
+                groups.Add(group);
+            }
         }
 
-        List<TriggerGroup> groups = new List<TriggerGroup>
-        {
-            TriggerGroup.From(config.triggerTexts_weakendefence, config.color_weakendefence),
-            TriggerGroup.From(config.triggerTexts_weakenattack, config.color_weakenattack),
-            TriggerGroup.From(config.triggerTexts_other, config.color_other)
-        };
+        return groups;
+    }
 
-        return groups.Where((TriggerGroup g) => g.TriggerTexts.Count > 0).ToList();
+    private static List<string>? ReadStringArray(JsonElement element)
+    {
+        if (element.ValueKind != JsonValueKind.Array)
+        {
+            return null;
+        }
+
+        List<string> values = new List<string>();
+        foreach (JsonElement item in element.EnumerateArray())
+        {
+            if (item.ValueKind == JsonValueKind.String)
+            {
+                string? value = item.GetString();
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    values.Add(value);
+                }
+            }
+        }
+
+        return values;
+    }
+
+    private static double ReadBubbleDurationSeconds(JsonElement root)
+    {
+        if (!root.TryGetProperty("bubbleDurationSeconds", out JsonElement durationElement))
+        {
+            return DefaultBubbleDurationSeconds;
+        }
+
+        double parsed;
+        if (durationElement.ValueKind == JsonValueKind.Number && durationElement.TryGetDouble(out parsed))
+        {
+            return Math.Clamp(parsed, 0.3, 10.0);
+        }
+
+        return DefaultBubbleDurationSeconds;
     }
 }
 
 [HarmonyPatch(typeof(Hook), nameof(Hook.AfterCardDrawn))]
 public static class AfterCardDrawnPatch
 {
+    private const double DrawBurstDebounceSeconds = 0.3;
+
+    private static readonly Dictionary<ulong, int> PendingDrawVersionByPlayer = new Dictionary<ulong, int>();
+
+    private static readonly Dictionary<ulong, string> LastShownSignatureByPlayer = new Dictionary<ulong, string>();
+
     public static void Postfix(CardModel card)
     {
         try
         {
+            if (!ModEntry.IsHintEnabledInCurrentRun())
+            {
+                return;
+            }
             if (card == null || card.Owner?.Creature == null)
             {
                 return;
             }
 
-            string title = card.Title ?? string.Empty;
-            string description = card.GetDescriptionForPile(card.Pile?.Type ?? PileType.None);
-            List<MatchedTrigger> matchedTexts = FindMatchedTexts(title, description);
-            if (matchedTexts.Count == 0)
-            {
-                return;
-            }
-
-            string bubbleText = "\u6211\u6709" + string.Join("\u3001", matchedTexts.Select((MatchedTrigger m) => FormatColoredText(m.Text, m.ColorHex)));
-            NSpeechBubbleVfx? bubble = NSpeechBubbleVfx.Create(bubbleText, card.Owner.Creature, 1.8);
-            if (bubble != null)
-            {
-                NCombatRoom.Instance?.CombatVfxContainer.AddChild(bubble);
-            }
+            ScheduleHandCheck(card.Owner.Creature);
         }
         catch (Exception ex)
         {
             Log.Error($"[ComboHint] failed in draw hook: {ex}");
         }
+    }
+
+    private static void ScheduleHandCheck(Creature ownerCreature)
+    {
+        ulong netId = ownerCreature.Player?.NetId ?? 0UL;
+        int version;
+        lock (PendingDrawVersionByPlayer)
+        {
+            if (!PendingDrawVersionByPlayer.TryGetValue(netId, out int current))
+            {
+                current = 0;
+            }
+
+            version = current + 1;
+            PendingDrawVersionByPlayer[netId] = version;
+        }
+
+        _ = EmitSingleBubbleAfterDrawBurst(ownerCreature, netId, version);
+    }
+
+    private static async Task EmitSingleBubbleAfterDrawBurst(Creature ownerCreature, ulong netId, int expectedVersion)
+    {
+        SceneTreeTimer timer = ((SceneTree)Engine.GetMainLoop()).CreateTimer(DrawBurstDebounceSeconds);
+        await timer.ToSignal(timer, SceneTreeTimer.SignalName.Timeout);
+
+        lock (PendingDrawVersionByPlayer)
+        {
+            if (!PendingDrawVersionByPlayer.TryGetValue(netId, out int latestVersion) || latestVersion != expectedVersion)
+            {
+                return;
+            }
+        }
+
+        IReadOnlyList<CardModel> handCards = ownerCreature.Player?.PlayerCombatState?.Hand?.Cards ?? Array.Empty<CardModel>();
+        List<MatchedTrigger> handMatches = FindMatchedTextsInHand(handCards);
+        string currentSignature = string.Join("|", handMatches.Select((MatchedTrigger m) => $"{m.ColorHex}:{m.Text}"));
+
+        lock (LastShownSignatureByPlayer)
+        {
+            if (!LastShownSignatureByPlayer.TryGetValue(netId, out string? lastShown))
+            {
+                lastShown = string.Empty;
+            }
+
+            if (currentSignature == lastShown)
+            {
+                return;
+            }
+
+            LastShownSignatureByPlayer[netId] = currentSignature;
+        }
+
+        if (handMatches.Count == 0)
+        {
+            return;
+        }
+
+        string bubbleText = "\u6211\u6709" + string.Join("\u3001", handMatches.Select((MatchedTrigger m) => FormatColoredText(m.Text, m.ColorHex)));
+        NSpeechBubbleVfx? bubble = NSpeechBubbleVfx.Create(bubbleText, ownerCreature, ModEntry.BubbleDurationSeconds);
+        if (bubble != null)
+        {
+            NCombatRoom.Instance?.CombatVfxContainer.AddChild(bubble);
+        }
+    }
+
+    private static List<MatchedTrigger> FindMatchedTextsInHand(IEnumerable<CardModel> handCards)
+    {
+        List<MatchedTrigger> matches = new List<MatchedTrigger>();
+        HashSet<string> dedup = new HashSet<string>(StringComparer.Ordinal);
+
+        foreach (CardModel handCard in handCards)
+        {
+            string title = handCard.Title ?? string.Empty;
+            string description = handCard.GetDescriptionForPile(handCard.Pile?.Type ?? PileType.None);
+            foreach (MatchedTrigger matched in FindMatchedTexts(title, description))
+            {
+                if (dedup.Add(matched.Text))
+                {
+                    matches.Add(matched);
+                }
+            }
+        }
+
+        return matches;
     }
 
     private static List<MatchedTrigger> FindMatchedTexts(string title, string description)
@@ -142,21 +338,6 @@ public static class AfterCardDrawnPatch
         string safeText = text.Replace("[", "\\[").Replace("]", "\\]");
         return $"[color={colorHex}]{safeText}[/color]";
     }
-}
-
-public sealed class ModConfig
-{
-    public List<string>? triggerTexts_weakendefence { get; set; }
-
-    public List<string>? triggerTexts_weakenattack { get; set; }
-
-    public List<string>? triggerTexts_other { get; set; }
-
-    public string? color_weakendefence { get; set; }
-
-    public string? color_weakenattack { get; set; }
-
-    public string? color_other { get; set; }
 }
 
 public sealed class TriggerGroup

@@ -1,4 +1,6 @@
 {
+  "bubbleDurationSeconds": 3,
+
   "triggerTexts_weakendefence": [
     "易伤",
     "夹击",
@@ -20,6 +22,31 @@
   ],
   "color_weakenattack": "#6EC1FF",
 
+  "triggerTexts_playerhelpbuff": [
+    "骸骨军团",
+    "协同配合",
+    "群起攻之",
+    "拦截",
+    "托举",
+    "集结",
+    "双打组合",
+    "恶魔护盾",
+    "鬼祟"
+  ],
+
+  "color_playerhelpbuff": "#93f67e",
+  
+  "triggerTexts_playerhelpcards": [
+    "慷慨捐助",
+    "能量涌动",
+    "引火",
+    "相信着你",
+    "彼岸一瞥",
+    "抱团"
+  ],
+
+  "color_playerhelpcards": "#f8c663",
+  
   "triggerTexts_other": [
     "摧残",
     "紧勒"

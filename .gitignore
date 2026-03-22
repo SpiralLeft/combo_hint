@@ -1,0 +1,32 @@
+# Build outputs
+bin/
+obj/
+
+# Local compiled artifacts
+*.dll
+*.pdb
+*.deps.json
+
+# Keep source and mod metadata
+!src/**
+!combo_hint.csproj
+!combo_hint.json
+!combo_hint.config.json
+!README.md
+
+# External local dependency dropped in folder
+sts2.dll
+
+# Packaged output
+dist/
+
+# IDE/editor files
+.vs/
+.vscode/
+*.user
+*.suo
+*.cache
+
+# OS junk
+Thumbs.db
+.DS_Store

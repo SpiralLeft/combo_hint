@@ -1,9 +1,10 @@
 {
   "id": "ComboHint",
   "name": "ComboHint",
-  "author": "local",
-  "description": "Show a speech bubble when a drawn card text contains 易伤.",
-  "version": "1.0.0",
+  "author": "spiraleaf",
+  "description": "A mod that provides hints for combo in the game.",
+  "version": "0.1.2",
+  "enableSinglePlayerHint": false,
   "has_pck": false,
   "has_dll": true,
   "affects_gameplay": false
