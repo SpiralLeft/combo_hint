@@ -30,3 +30,10 @@ dist/
 # OS junk
 Thumbs.db
 .DS_Store
+
+# Build scripts
+build.ps1
+build.bat
+
+# Runtime debug logs
+combo_hint.ui.log

@@ -6,13 +6,14 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using HarmonyLib;
 using Godot;
+using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Entities.Potions;
 using MegaCrit.Sts2.Core.Hooks;
 using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Modding;
-using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Vfx;
 using MegaCrit.Sts2.Core.Runs;
@@ -28,6 +29,8 @@ public static class ModEntry
 
     private const string ConfigFileName = "combo_hint.config.json";
 
+    private const string UiLogFileName = "combo_hint.ui.log";
+
     private const double DefaultBubbleDurationSeconds = 1.8;
 
     public static IReadOnlyList<TriggerGroup> TriggerGroups { get; private set; } = new List<TriggerGroup>();
@@ -36,14 +39,69 @@ public static class ModEntry
 
     public static bool EnableSinglePlayerHint { get; private set; } = true;
 
+    public static string ModRootPath { get; private set; } = string.Empty;
+
     public static void Initialize()
     {
         LoadConfig();
         LoadManifestSettings();
+        ResetUiLog();
 
         new Harmony(HarmonyId).PatchAll();
         int totalTriggerCount = TriggerGroups.Sum((TriggerGroup g) => g.TriggerTexts.Count);
         Log.Info($"[ComboHint] initialized, trigger groups: {TriggerGroups.Count}, trigger texts: {totalTriggerCount}, enableSinglePlayerHint: {EnableSinglePlayerHint}");
+    }
+
+    public static void ResetUiLog()
+    {
+        try
+        {
+            string root = ResolveModRoot();
+            string path = Path.Combine(root, UiLogFileName);
+            string banner = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] ComboHintUiLog.Reset: start new session{System.Environment.NewLine}";
+            File.WriteAllText(path, banner);
+        }
+        catch
+        {
+        }
+    }
+
+    public static void LogUi(string tag, string message)
+    {
+        try
+        {
+            string root = ResolveModRoot();
+            string path = Path.Combine(root, UiLogFileName);
+            string line = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {tag}: {message}{System.Environment.NewLine}";
+            File.AppendAllText(path, line);
+        }
+        catch
+        {
+        }
+    }
+
+    private static string ResolveModRoot()
+    {
+        string root = ModRootPath;
+        if (string.IsNullOrWhiteSpace(root))
+        {
+            Mod? me = ModManager.AllMods.FirstOrDefault((Mod m) => m.manifest?.id == ModId);
+            root = me?.path ?? Directory.GetCurrentDirectory();
+        }
+
+        return root;
+    }
+
+    public static void LogErrorToFile(string context, Exception ex)
+    {
+        // Legacy logger disabled temporarily; route concise information to UI log.
+        LogUi("LegacyError", $"{context}: {ex.Message}");
+    }
+
+    public static void LogInfoToFile(string context, string message)
+    {
+        // Legacy logger disabled temporarily; route concise information to UI log.
+        LogUi($"LegacyInfo/{context}", message);
     }
 
     private static void LoadManifestSettings()
@@ -107,6 +165,8 @@ public static class ModEntry
                 return;
             }
 
+            ModRootPath = me.path;
+
             string configPath = Path.Combine(me.path, ConfigFileName);
             if (!File.Exists(configPath))
             {
@@ -128,6 +188,7 @@ public static class ModEntry
         catch (Exception ex)
         {
             Log.Error($"[ComboHint] failed to load config: {ex}");
+            LogErrorToFile("LoadConfig", ex);
             TriggerGroups = new List<TriggerGroup>();
             BubbleDurationSeconds = DefaultBubbleDurationSeconds;
         }
@@ -211,6 +272,29 @@ public static class AfterCardDrawnPatch
 
     private static readonly Dictionary<ulong, string> LastShownSignatureByPlayer = new Dictionary<ulong, string>();
 
+    private static ulong _lastCombatCreatedMsec;
+
+    public static void EnsureCombatStateFresh()
+    {
+        ulong createdMsec = NCombatRoom.Instance?.CreatedMsec ?? 0UL;
+        if (createdMsec == 0UL || createdMsec == _lastCombatCreatedMsec)
+        {
+            return;
+        }
+
+        lock (PendingDrawVersionByPlayer)
+        {
+            PendingDrawVersionByPlayer.Clear();
+        }
+
+        lock (LastShownSignatureByPlayer)
+        {
+            LastShownSignatureByPlayer.Clear();
+        }
+
+        _lastCombatCreatedMsec = createdMsec;
+    }
+
     public static void Postfix(CardModel card)
     {
         try
@@ -224,11 +308,15 @@ public static class AfterCardDrawnPatch
                 return;
             }
 
+            EnsureCombatStateFresh();
             ScheduleHandCheck(card.Owner.Creature);
+            ComboHintOverlay.EnsureAttached();
+            ComboHintOverlay.Refresh();
         }
         catch (Exception ex)
         {
             Log.Error($"[ComboHint] failed in draw hook: {ex}");
+            ModEntry.LogErrorToFile("AfterCardDrawnPatch.Postfix", ex);
         }
     }
 
@@ -337,6 +425,118 @@ public static class AfterCardDrawnPatch
     {
         string safeText = text.Replace("[", "\\[").Replace("]", "\\]");
         return $"[color={colorHex}]{safeText}[/color]";
+    }
+}
+
+[HarmonyPatch(typeof(Hook), nameof(Hook.AfterCardPlayed))]
+public static class AfterCardPlayedPatch
+{
+    public static void Postfix(CardPlay cardPlay)
+    {
+        try
+        {
+            if (!ModEntry.IsHintEnabledInCurrentRun())
+            {
+                return;
+            }
+
+            AfterCardDrawnPatch.EnsureCombatStateFresh();
+            ComboHintOverlay.EnsureAttached();
+            ComboHintOverlay.Refresh();
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"[ComboHint] failed in after card played hook: {ex}");
+            ModEntry.LogErrorToFile("AfterCardPlayedPatch.Postfix", ex);
+        }
+    }
+}
+
+[HarmonyPatch(typeof(Hook), nameof(Hook.AfterPotionUsed))]
+public static class AfterPotionUsedPatch
+{
+    public static void Postfix(PotionModel potion)
+    {
+        try
+        {
+            if (!ModEntry.IsHintEnabledInCurrentRun())
+            {
+                return;
+            }
+
+            AfterCardDrawnPatch.EnsureCombatStateFresh();
+            ComboHintOverlay.EnsureAttached();
+            ComboHintOverlay.Refresh();
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"[ComboHint] failed in after potion used hook: {ex}");
+            ModEntry.LogErrorToFile("AfterPotionUsedPatch.Postfix", ex);
+        }
+    }
+}
+
+[HarmonyPatch(typeof(Hook), nameof(Hook.AfterTurnEnd))]
+public static class AfterTurnEndPatch
+{
+    public static void Postfix()
+    {
+        try
+        {
+            ComboHintOverlay.HideTransient("after_turn_end");
+        }
+        catch (Exception ex)
+        {
+            ModEntry.LogErrorToFile("AfterTurnEndPatch.Postfix", ex);
+        }
+    }
+}
+
+[HarmonyPatch(typeof(Hook), nameof(Hook.AfterCombatVictory))]
+public static class AfterCombatVictoryPatch
+{
+    public static void Postfix()
+    {
+        try
+        {
+            ComboHintOverlay.DisposeActiveNode("after_combat_victory");
+        }
+        catch (Exception ex)
+        {
+            ModEntry.LogErrorToFile("AfterCombatVictoryPatch.Postfix", ex);
+        }
+    }
+}
+
+[HarmonyPatch(typeof(Hook), nameof(Hook.AfterCombatEnd))]
+public static class AfterCombatEndPatch
+{
+    public static void Postfix()
+    {
+        try
+        {
+            ComboHintOverlay.DisposeActiveNode("after_combat_end");
+        }
+        catch (Exception ex)
+        {
+            ModEntry.LogErrorToFile("AfterCombatEndPatch.Postfix", ex);
+        }
+    }
+}
+
+[HarmonyPatch(typeof(Hook), nameof(Hook.AfterSideTurnStart))]
+public static class AfterSideTurnStartPatch
+{
+    public static void Postfix(CombatState combatState, CombatSide side)
+    {
+        try
+        {
+            ComboHintOverlay.OnSideTurnStart(side);
+        }
+        catch (Exception ex)
+        {
+            ModEntry.LogUi("AfterSideTurnStartPatch.Error", ex.Message);
+        }
     }
 }
 

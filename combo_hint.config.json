@@ -18,6 +18,7 @@
     "尖啸",
     "凌虐",
     "萎靡",
+    "命运同担",
     "黑暗镣铐"
   ],
   "color_weakenattack": "#6EC1FF",
@@ -49,6 +50,7 @@
   
   "triggerTexts_other": [
     "摧残",
+    "吹哨",
     "紧勒"
   ],
   "color_other": "#C9A6FF"
