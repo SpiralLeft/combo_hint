@@ -65,6 +65,7 @@ public static class ComboHintOverlay
             ComboHintOverlayNode? existing = uiParent.GetChildren().OfType<ComboHintOverlayNode>().FirstOrDefault();
             if (existing != null)
             {
+                existing.SetLowerLayerOrder();
                 _node = existing;
                 return;
             }
@@ -89,6 +90,26 @@ public static class ComboHintOverlay
         {
             _node.RefreshContent();
         }
+    }
+
+    public static void RefreshImmediatelyForCurrentTurn(string reason)
+    {
+        EnsureAttached();
+        if (_node == null || !GodotObject.IsInstanceValid(_node))
+        {
+            return;
+        }
+
+        CombatState? state = CombatManager.Instance?.DebugOnlyGetState();
+        if (state?.CurrentSide == CombatSide.Player)
+        {
+            _node.ResetVisibilityForTurn(CombatSide.Player);
+            ModEntry.LogUi("Overlay.RefreshImmediate", $"reason={reason}, side=Player");
+            return;
+        }
+
+        _node.RefreshContent();
+        ModEntry.LogUi("Overlay.RefreshImmediate", $"reason={reason}, side={state?.CurrentSide}");
     }
 
     public static void HideTransient(string reason)
@@ -134,6 +155,7 @@ public partial class ComboHintOverlayNode : PanelContainer
     private bool _isVisible;
     private bool _isReady;
     private bool _isHovering;
+    private ulong _lastHoverAlphaLogFrame;
     private string _lastStateSignature = string.Empty;
 
     public override void _EnterTree()
@@ -157,7 +179,7 @@ public partial class ComboHintOverlayNode : PanelContainer
         OffsetRight = -16f;
         OffsetBottom = 304f;
         MouseFilter = MouseFilterEnum.Pass;
-        ZIndex = 10;
+        ZIndex = -1;
         TopLevel = false;
         AddThemeStyleboxOverride("panel", new StyleBoxEmpty());
 
@@ -192,7 +214,18 @@ public partial class ComboHintOverlayNode : PanelContainer
     public void ForceSetupAndRefresh()
     {
         EnsureInitialized();
+        SetLowerLayerOrder();
         RefreshContent();
+    }
+
+    public void SetLowerLayerOrder()
+    {
+        ZIndex = -1;
+        Node? parent = GetParent();
+        if (parent != null)
+        {
+            parent.MoveChild(this, 0);
+        }
     }
 
     public override void _Ready()
@@ -235,6 +268,7 @@ public partial class ComboHintOverlayNode : PanelContainer
         }
 
         UpdateHoverOpacity();
+        LogHoverAlphaWhileHovering();
     }
 
     private void UpdateHoverOpacity()
@@ -250,14 +284,31 @@ public partial class ComboHintOverlayNode : PanelContainer
         SetOverlayOpacity(isHoveringNow);
     }
 
+    private void LogHoverAlphaWhileHovering()
+    {
+        if (_hoverTipBox == null || !GodotObject.IsInstanceValid(_hoverTipBox) || !_hoverTipBox.Visible || !_isHovering)
+        {
+            return;
+        }
+
+        ulong frame = Engine.GetProcessFrames();
+        if (_lastHoverAlphaLogFrame != 0UL && frame - _lastHoverAlphaLogFrame < 5UL)
+        {
+            return;
+        }
+
+        _lastHoverAlphaLogFrame = frame;
+        Log.Info($"[ComboHint] overlay alpha while hovering: {_hoverTipBox.Modulate.A:0.00}, frame={frame}");
+    }
+
     private void OnHoverTipMouseEntered()
     {
-        SetOverlayOpacity(true);
+        SetOverlayOpacity(true, forceApplyAlpha: true);
     }
 
     private void OnHoverTipMouseExited()
     {
-        SetOverlayOpacity(false);
+        SetOverlayOpacity(false, forceApplyAlpha: true);
     }
 
     public void HideOverlay(string reason)
@@ -306,7 +357,7 @@ public partial class ComboHintOverlayNode : PanelContainer
                 return;
             }
 
-            if (!ModEntry.IsHintEnabledInCurrentRun())
+            if (!ModEntry.IsOverlayEnabledInCurrentRun())
             {
                 LogStateIfChanged("disabled_by_singleplayer_setting", 0);
                 _hoverTipBox.Visible = false;
@@ -329,7 +380,7 @@ public partial class ComboHintOverlayNode : PanelContainer
             }
 
             List<string> lines = new List<string>();
-            IEnumerable<Creature> players = room.CreatureNodes.Select((NCreature n) => n.Entity).Where((Creature c) => c != null && c.IsPlayer);
+            List<Creature> players = room.CreatureNodes.Select((NCreature n) => n.Entity).Where((Creature c) => c != null && c.IsPlayer).ToList();
             foreach (Creature playerCreature in players)
             {
                 IReadOnlyList<CardModel> handCards = playerCreature.Player?.PlayerCombatState?.Hand?.Cards ?? Array.Empty<CardModel>();
@@ -342,6 +393,30 @@ public partial class ComboHintOverlayNode : PanelContainer
                 string playerName = GetSafePlayerName(playerCreature);
                 string joinedHits = string.Join("、", matches.Select((MatchedTrigger m) => FormatColoredText(m.Text, m.ColorHex)));
                 lines.Add(playerName + "有" + joinedHits);
+            }
+
+            List<string> overlayKillLines = new List<string>();
+            if (ModEntry.OverlayKillTriggerGroup.TriggerTexts.Count > 0)
+            {
+                foreach (Creature playerCreature in players)
+                {
+                    IReadOnlyList<CardModel> handCards = playerCreature.Player?.PlayerCombatState?.Hand?.Cards ?? Array.Empty<CardModel>();
+                    List<MatchedTrigger> matches = FindMatchedTextsInHandForGroup(handCards, ModEntry.OverlayKillTriggerGroup);
+                    if (matches.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    string playerName = GetSafePlayerName(playerCreature);
+                    string joinedHits = string.Join("、", matches.Select((MatchedTrigger m) => FormatColoredText(m.Text, m.ColorHex)));
+                    overlayKillLines.Add(playerName + "有" + joinedHits);
+                }
+            }
+
+            if (overlayKillLines.Count > 0)
+            {
+                lines.Add($"[color={ModEntry.OverlayKillTitleColorHex}]斩杀[/color]");
+                lines.AddRange(overlayKillLines);
             }
 
             if (lines.Count == 0)
@@ -378,25 +453,40 @@ public partial class ComboHintOverlayNode : PanelContainer
             return;
         }
 
+        // First-show correctness: determine hover state immediately to avoid a stale 100% alpha frame.
+        if (_hoverTipBox.Visible)
+        {
+            Rect2 hoverRect = _hoverTipBox.GetGlobalRect();
+            Vector2 mousePosition = GetGlobalMousePosition();
+            bool isHoveringNow = hoverRect.HasPoint(mousePosition);
+            SetOverlayOpacity(isHoveringNow, forceApplyAlpha: true);
+            return;
+        }
+
         _isHovering = false;
-        SetOverlayOpacity(false);
+        Color color = _hoverTipBox.Modulate;
+        color.A = IdleAlpha;
+        _hoverTipBox.Modulate = color;
     }
 
-    private void SetOverlayOpacity(bool isHoveringNow)
+    private void SetOverlayOpacity(bool isHoveringNow, bool forceApplyAlpha = false)
     {
         if (_hoverTipBox == null || !GodotObject.IsInstanceValid(_hoverTipBox))
         {
             return;
         }
 
-        if (isHoveringNow == _isHovering)
+        float targetAlpha = isHoveringNow ? HoveredAlpha : IdleAlpha;
+        float currentAlpha = _hoverTipBox.Modulate.A;
+        bool alphaAlreadySet = Math.Abs(currentAlpha - targetAlpha) < 0.001f;
+        if (!forceApplyAlpha && isHoveringNow == _isHovering && alphaAlreadySet)
         {
             return;
         }
 
         _isHovering = isHoveringNow;
         Color color = _hoverTipBox.Modulate;
-        color.A = _isHovering ? HoveredAlpha : IdleAlpha;
+        color.A = targetAlpha;
         _hoverTipBox.Modulate = color;
     }
 
@@ -452,6 +542,27 @@ public partial class ComboHintOverlayNode : PanelContainer
                 if (dedup.Add(matched.Text))
                 {
                     matches.Add(matched);
+                }
+            }
+        }
+
+        return matches;
+    }
+
+    private static List<MatchedTrigger> FindMatchedTextsInHandForGroup(IEnumerable<CardModel> handCards, TriggerGroup group)
+    {
+        List<MatchedTrigger> matches = new List<MatchedTrigger>();
+        HashSet<string> dedup = new HashSet<string>(StringComparer.Ordinal);
+
+        foreach (CardModel handCard in handCards)
+        {
+            string title = handCard.Title ?? string.Empty;
+            string description = handCard.GetDescriptionForPile(handCard.Pile?.Type ?? PileType.None);
+            foreach (string triggerText in group.TriggerTexts)
+            {
+                if (((!string.IsNullOrEmpty(title) && title.Contains(triggerText, StringComparison.Ordinal)) || (!string.IsNullOrEmpty(description) && description.Contains(triggerText, StringComparison.Ordinal))) && dedup.Add(triggerText))
+                {
+                    matches.Add(new MatchedTrigger(triggerText, group.ColorHex));
                 }
             }
         }

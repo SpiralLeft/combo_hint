@@ -3,7 +3,7 @@
   "name": "ComboHint",
   "author": "spiraleaf",
   "description": "A mod that provides hints for combo in the game.",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "enableSinglePlayerHint": true,
   "has_pck": false,
   "has_dll": true,

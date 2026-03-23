@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using HarmonyLib;
 using Godot;
@@ -30,14 +31,25 @@ public static class ModEntry
     private const string ConfigFileName = "combo_hint.config.json";
 
     private const string UiLogFileName = "combo_hint.ui.log";
+    private const string InjectLogFileName = "combo_hint.inject.log";
+
+    private const string ConfigEnabledKey = "comboHintEnabled";
 
     private const double DefaultBubbleDurationSeconds = 1.8;
 
+    private const string DefaultOverlayKillTitleColorHex = "#FF3B30";
+
     public static IReadOnlyList<TriggerGroup> TriggerGroups { get; private set; } = new List<TriggerGroup>();
+
+    public static TriggerGroup OverlayKillTriggerGroup { get; private set; } = TriggerGroup.From(null, "#FF7F50");
+
+    public static string OverlayKillTitleColorHex { get; private set; } = DefaultOverlayKillTitleColorHex;
 
     public static double BubbleDurationSeconds { get; private set; } = DefaultBubbleDurationSeconds;
 
     public static bool EnableSinglePlayerHint { get; private set; } = true;
+
+    public static bool EnabledByGameplaySetting { get; private set; } = true;
 
     public static string ModRootPath { get; private set; } = string.Empty;
 
@@ -46,6 +58,7 @@ public static class ModEntry
         LoadConfig();
         LoadManifestSettings();
         ResetUiLog();
+        ResetInjectLog();
 
         new Harmony(HarmonyId).PatchAll();
         int totalTriggerCount = TriggerGroups.Sum((TriggerGroup g) => g.TriggerTexts.Count);
@@ -72,6 +85,32 @@ public static class ModEntry
         {
             string root = ResolveModRoot();
             string path = Path.Combine(root, UiLogFileName);
+            string line = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {tag}: {message}{System.Environment.NewLine}";
+            File.AppendAllText(path, line);
+        }
+        catch
+        {
+        }
+    }
+
+    public static void ResetInjectLog()
+    {
+        try
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), InjectLogFileName);
+            string banner = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] ComboHintInjectLog.Reset: start new session{System.Environment.NewLine}";
+            File.WriteAllText(path, banner);
+        }
+        catch
+        {
+        }
+    }
+
+    public static void LogInject(string tag, string message)
+    {
+        try
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), InjectLogFileName);
             string line = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {tag}: {message}{System.Environment.NewLine}";
             File.AppendAllText(path, line);
         }
@@ -143,7 +182,22 @@ public static class ModEntry
         }
     }
 
-    public static bool IsHintEnabledInCurrentRun()
+    public static bool IsOverlayEnabledInCurrentRun()
+    {
+        if (!EnabledByGameplaySetting)
+        {
+            return false;
+        }
+
+        if (!EnableSinglePlayerHint && (RunManager.Instance?.IsSinglePlayerOrFakeMultiplayer ?? false))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static bool IsBubbleEnabledInCurrentRun()
     {
         if (!EnableSinglePlayerHint && (RunManager.Instance?.IsSinglePlayerOrFakeMultiplayer ?? false))
         {
@@ -151,6 +205,44 @@ public static class ModEntry
         }
 
         return true;
+    }
+
+    public static void SetEnabledByGameplaySetting(bool enabled)
+    {
+        if (EnabledByGameplaySetting == enabled)
+        {
+            return;
+        }
+
+        EnabledByGameplaySetting = enabled;
+        SaveEnabledSettingToConfig();
+        LogUi("GameplaySetting.ComboHint", $"enabled={enabled}");
+    }
+
+    private static void SaveEnabledSettingToConfig()
+    {
+        try
+        {
+            string configPath = Path.Combine(ResolveModRoot(), ConfigFileName);
+            JsonObject rootObject;
+            if (File.Exists(configPath))
+            {
+                JsonNode? parsed = JsonNode.Parse(File.ReadAllText(configPath));
+                rootObject = parsed as JsonObject ?? new JsonObject();
+            }
+            else
+            {
+                rootObject = new JsonObject();
+            }
+
+            rootObject[ConfigEnabledKey] = EnabledByGameplaySetting;
+            string output = rootObject.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(configPath, output);
+        }
+        catch (Exception ex)
+        {
+            Log.Warn($"[ComboHint] failed to write {ConfigFileName}: {ex.Message}");
+        }
     }
 
     private static void LoadConfig()
@@ -178,7 +270,10 @@ public static class ModEntry
 
             string json = File.ReadAllText(configPath);
             using JsonDocument doc = JsonDocument.Parse(json);
+            EnabledByGameplaySetting = ReadEnabledSetting(doc.RootElement);
             TriggerGroups = BuildTriggerGroups(doc.RootElement);
+            OverlayKillTriggerGroup = ReadOverlayKillTriggerGroup(doc.RootElement);
+            OverlayKillTitleColorHex = ReadOverlayKillTitleColor(doc.RootElement);
             BubbleDurationSeconds = ReadBubbleDurationSeconds(doc.RootElement);
             if (TriggerGroups.Count == 0)
             {
@@ -190,8 +285,61 @@ public static class ModEntry
             Log.Error($"[ComboHint] failed to load config: {ex}");
             LogErrorToFile("LoadConfig", ex);
             TriggerGroups = new List<TriggerGroup>();
+            EnabledByGameplaySetting = true;
+            OverlayKillTriggerGroup = TriggerGroup.From(null, "#FF7F50");
+            OverlayKillTitleColorHex = DefaultOverlayKillTitleColorHex;
             BubbleDurationSeconds = DefaultBubbleDurationSeconds;
         }
+    }
+
+    private static bool ReadEnabledSetting(JsonElement root)
+    {
+        if (root.TryGetProperty(ConfigEnabledKey, out JsonElement enabledElement))
+        {
+            if (enabledElement.ValueKind == JsonValueKind.True)
+            {
+                return true;
+            }
+
+            if (enabledElement.ValueKind == JsonValueKind.False)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static TriggerGroup ReadOverlayKillTriggerGroup(JsonElement root)
+    {
+        List<string>? triggerTexts = null;
+        if (root.TryGetProperty("overlayKillTriggerTexts", out JsonElement triggerTextsElement))
+        {
+            triggerTexts = ReadStringArray(triggerTextsElement);
+        }
+
+        string? color = null;
+        if (root.TryGetProperty("overlayKillColor", out JsonElement colorElement) && colorElement.ValueKind == JsonValueKind.String)
+        {
+            color = colorElement.GetString();
+        }
+
+        return TriggerGroup.From(triggerTexts, color);
+    }
+
+    private static string ReadOverlayKillTitleColor(JsonElement root)
+    {
+        if (root.TryGetProperty("overlayKillTitleColor", out JsonElement titleColorElement) && titleColorElement.ValueKind == JsonValueKind.String)
+        {
+            string? raw = titleColorElement.GetString();
+            if (!string.IsNullOrWhiteSpace(raw))
+            {
+                string trimmed = raw.Trim();
+                return trimmed.StartsWith("#", StringComparison.Ordinal) ? trimmed : "#" + trimmed;
+            }
+        }
+
+        return DefaultOverlayKillTitleColorHex;
     }
 
     private static List<TriggerGroup> BuildTriggerGroups(JsonElement root)
@@ -299,19 +447,29 @@ public static class AfterCardDrawnPatch
     {
         try
         {
-            if (!ModEntry.IsHintEnabledInCurrentRun())
-            {
-                return;
-            }
             if (card == null || card.Owner?.Creature == null)
             {
                 return;
             }
 
+            bool bubbleEnabled = ModEntry.IsBubbleEnabledInCurrentRun();
+            bool overlayEnabled = ModEntry.IsOverlayEnabledInCurrentRun();
+            if (!bubbleEnabled && !overlayEnabled)
+            {
+                return;
+            }
+
             EnsureCombatStateFresh();
-            ScheduleHandCheck(card.Owner.Creature);
-            ComboHintOverlay.EnsureAttached();
-            ComboHintOverlay.Refresh();
+            if (bubbleEnabled)
+            {
+                ScheduleHandCheck(card.Owner.Creature);
+            }
+
+            if (overlayEnabled)
+            {
+                ComboHintOverlay.EnsureAttached();
+                ComboHintOverlay.Refresh();
+            }
         }
         catch (Exception ex)
         {
@@ -435,7 +593,7 @@ public static class AfterCardPlayedPatch
     {
         try
         {
-            if (!ModEntry.IsHintEnabledInCurrentRun())
+            if (!ModEntry.IsOverlayEnabledInCurrentRun())
             {
                 return;
             }
@@ -459,7 +617,7 @@ public static class AfterPotionUsedPatch
     {
         try
         {
-            if (!ModEntry.IsHintEnabledInCurrentRun())
+            if (!ModEntry.IsOverlayEnabledInCurrentRun())
             {
                 return;
             }
