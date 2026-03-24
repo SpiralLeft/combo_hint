@@ -144,7 +144,6 @@ public static class ComboHintOverlay
 public partial class ComboHintOverlayNode : PanelContainer
 {
     private const string HoverTipScenePath = "res://scenes/ui/hover_tip.tscn";
-    private const string DefaultNoMatchText = "当前没有连携效果";
     private const float HoveredAlpha = 1.0f;
     private const float IdleAlpha = 0.5f;
     private const string SpecialWeakenGroupKey = "specialweaken";
@@ -393,8 +392,8 @@ public partial class ComboHintOverlayNode : PanelContainer
                 }
 
                 string playerName = GetSafePlayerName(playerCreature);
-                string joinedHits = string.Join("、", matches.Select((MatchedTrigger m) => FormatColoredText(m.Text, m.ColorHex)));
-                lines.Add(playerName + "有" + joinedHits);
+                string joinedHits = string.Join(ModEntry.GetLocalizedListSeparator(), matches.Select((MatchedTrigger m) => FormatColoredText(m.Text, m.ColorHex)));
+                lines.Add(playerName + ModEntry.GetLocalizedHasConnector() + joinedHits);
             }
 
             List<string> overlayKillLines = new List<string>();
@@ -410,28 +409,28 @@ public partial class ComboHintOverlayNode : PanelContainer
                     }
 
                     string playerName = GetSafePlayerName(playerCreature);
-                    string joinedHits = string.Join("、", matches.Select((MatchedTrigger m) => FormatColoredText(m.Text, m.ColorHex)));
-                    overlayKillLines.Add(playerName + "有" + joinedHits);
+                    string joinedHits = string.Join(ModEntry.GetLocalizedListSeparator(), matches.Select((MatchedTrigger m) => FormatColoredText(m.Text, m.ColorHex)));
+                    overlayKillLines.Add(playerName + ModEntry.GetLocalizedHasConnector() + joinedHits);
                 }
             }
 
             if (overlayKillLines.Count > 0)
             {
-                lines.Add($"[color={ModEntry.OverlayKillTitleColorHex}]斩杀[/color]");
+                lines.Add($"[color={ModEntry.OverlayKillTitleColorHex}]{ModEntry.GetLocalizedKillTitle()}[/color]");
                 lines.AddRange(overlayKillLines);
             }
 
             if (lines.Count == 0)
             {
-                _titleLabel.SetTextAutoSize("连携提示");
-                _descriptionLabel.Text = DefaultNoMatchText;
+                _titleLabel.SetTextAutoSize(ModEntry.GetLocalizedComboHintTitle());
+                _descriptionLabel.Text = ModEntry.GetLocalizedNoMatchText();
                 _hoverTipBox.Visible = true;
                 ApplyIdleOpacity();
                 LogStateIfChanged("no_matches_default_text", 1);
                 return;
             }
 
-            _titleLabel.SetTextAutoSize("连携提示");
+            _titleLabel.SetTextAutoSize(ModEntry.GetLocalizedComboHintTitle());
             _descriptionLabel.Text = string.Join("\n", lines);
             _hoverTipBox.Visible = true;
             ApplyIdleOpacity();
@@ -562,7 +561,7 @@ public partial class ComboHintOverlayNode : PanelContainer
                 continue;
             }
 
-            string displayText = handCard.Title ?? modelId;
+            string displayText = ModEntry.GetDisplayCardTitleWithEnglish(handCard);
             string dedupKey = group.ColorHex + "|" + displayText;
             if (dedup.Add(dedupKey))
             {
@@ -583,7 +582,7 @@ public partial class ComboHintOverlayNode : PanelContainer
             return matches;
         }
 
-        string title = card.Title ?? modelId;
+        string title = ModEntry.GetDisplayCardTitleWithEnglish(card);
         foreach (TriggerGroup group in ModEntry.TriggerGroups)
         {
             if (!group.TriggerModelIds.Contains(modelId))
@@ -594,11 +593,11 @@ public partial class ComboHintOverlayNode : PanelContainer
             string displayText;
             if (group.Key.Equals(SpecialWeakenGroupKey, StringComparison.OrdinalIgnoreCase))
             {
-                displayText = "虚弱";
+                displayText = ModEntry.GetLocalizedWeakText();
             }
             else if (group.Key.Equals(SpecialVulnerableGroupKey, StringComparison.OrdinalIgnoreCase))
             {
-                displayText = "易伤";
+                displayText = ModEntry.GetLocalizedVulnerableText();
             }
             else
             {

@@ -170,12 +170,29 @@ public static class ComboHintSettingsInjector
 
     private const string HoverTipScenePath = "res://scenes/ui/hover_tip.tscn";
 
-    private const string ComboHintHoverTipTitle = "连携提示框";
-    private const string ComboHintHoverTipDescription = "启用右上角连携提示框。";
-    private const string SinglePlayerComboHintHoverTipTitle = "单人连携";
-    private const string SinglePlayerComboHintHoverTipDescription = "开启后游玩单人模式时启用ComboHint。";
-    private const string BubbleHintHoverTipTitle = "气泡开关";
-    private const string BubbleHintHoverTipDescription = "启用角色对话气泡连携提示。";
+    private const string ComboHintHeaderZh = "ComboHint设置";
+    private const string ComboHintHeaderEn = "ComboHint Settings";
+
+    private const string ComboHintLabelZh = "连携提示框";
+    private const string ComboHintLabelEn = "Combo Hint Overlay";
+    private const string ComboHintHoverTipTitleZh = "连携提示框";
+    private const string ComboHintHoverTipTitleEn = "Combo Hint Overlay";
+    private const string ComboHintHoverTipDescriptionZh = "启用右上角连携提示框。";
+    private const string ComboHintHoverTipDescriptionEn = "Enable the combo hint overlay in the top-right corner.";
+
+    private const string SinglePlayerComboHintLabelZh = "单人连携";
+    private const string SinglePlayerComboHintLabelEn = "Single-Player Combo Hint";
+    private const string SinglePlayerComboHintHoverTipTitleZh = "单人连携";
+    private const string SinglePlayerComboHintHoverTipTitleEn = "Single-Player Combo Hint";
+    private const string SinglePlayerComboHintHoverTipDescriptionZh = "开启后游玩单人模式时启用ComboHint。";
+    private const string SinglePlayerComboHintHoverTipDescriptionEn = "Enable ComboHint in single-player mode.";
+
+    private const string BubbleHintLabelZh = "气泡开关";
+    private const string BubbleHintLabelEn = "Bubble Hint";
+    private const string BubbleHintHoverTipTitleZh = "气泡开关";
+    private const string BubbleHintHoverTipTitleEn = "Bubble Hint";
+    private const string BubbleHintHoverTipDescriptionZh = "启用角色对话气泡连携提示。";
+    private const string BubbleHintHoverTipDescriptionEn = "Enable combo hints in character speech bubbles.";
 
     private const string HoverTipBoundMetaKey = "combo_hint_hover_tip_bound";
     private const string HoverTipTitleMetaKey = "combo_hint_hover_tip_title";
@@ -210,6 +227,32 @@ public static class ComboHintSettingsInjector
         { ToastBubbleOffKey, "Disable character bubble combo hints" }
     };
 
+    private static bool UseChineseUiText()
+    {
+        string language = LocManager.Instance.Language ?? "eng";
+        return ModEntry.IsChineseLanguage(language);
+    }
+
+    private static string GetHeaderLabel() => UseChineseUiText() ? ComboHintHeaderZh : ComboHintHeaderEn;
+
+    private static string GetComboHintLabel() => UseChineseUiText() ? ComboHintLabelZh : ComboHintLabelEn;
+
+    private static string GetComboHintHoverTipTitle() => UseChineseUiText() ? ComboHintHoverTipTitleZh : ComboHintHoverTipTitleEn;
+
+    private static string GetComboHintHoverTipDescription() => UseChineseUiText() ? ComboHintHoverTipDescriptionZh : ComboHintHoverTipDescriptionEn;
+
+    private static string GetSinglePlayerLabel() => UseChineseUiText() ? SinglePlayerComboHintLabelZh : SinglePlayerComboHintLabelEn;
+
+    private static string GetSinglePlayerHoverTipTitle() => UseChineseUiText() ? SinglePlayerComboHintHoverTipTitleZh : SinglePlayerComboHintHoverTipTitleEn;
+
+    private static string GetSinglePlayerHoverTipDescription() => UseChineseUiText() ? SinglePlayerComboHintHoverTipDescriptionZh : SinglePlayerComboHintHoverTipDescriptionEn;
+
+    private static string GetBubbleHintLabel() => UseChineseUiText() ? BubbleHintLabelZh : BubbleHintLabelEn;
+
+    private static string GetBubbleHintHoverTipTitle() => UseChineseUiText() ? BubbleHintHoverTipTitleZh : BubbleHintHoverTipTitleEn;
+
+    private static string GetBubbleHintHoverTipDescription() => UseChineseUiText() ? BubbleHintHoverTipDescriptionZh : BubbleHintHoverTipDescriptionEn;
+
     private static void EnsureToastLocalizationRegistered()
     {
         try
@@ -222,7 +265,7 @@ public static class ComboHintSettingsInjector
                 return;
             }
 
-            Dictionary<string, string> selected = language == "eng" ? ToastEn : ToastZh;
+            Dictionary<string, string> selected = ModEntry.IsChineseLanguage(language) ? ToastZh : ToastEn;
             table.MergeWith(selected);
             _toastLocalizationRegistered = true;
             _toastLocalizationLanguage = language;
@@ -306,16 +349,16 @@ public static class ComboHintSettingsInjector
                 ComboHintRowName,
                 ComboHintDividerName,
                 ComboHintTickboxName,
-                "连携提示框",
-                ComboHintHoverTipTitle,
-                ComboHintHoverTipDescription);
+                GetComboHintLabel(),
+                GetComboHintHoverTipTitle(),
+                GetComboHintHoverTipDescription());
 
             Control comboHeaderRow = EnsureHeaderRow(
                 content,
                 fastModeRow,
                 ComboHintHeaderRowName,
                 ComboHintHeaderDividerName,
-                "ComboHint设置");
+                GetHeaderLabel());
 
             (Control Row, NFastModeTickbox Tickbox) singlePlayerSetting = EnsureSettingRow(
                 content,
@@ -323,9 +366,9 @@ public static class ComboHintSettingsInjector
                 SinglePlayerComboHintRowName,
                 SinglePlayerComboHintDividerName,
                 SinglePlayerComboHintTickboxName,
-                "单人连携",
-                SinglePlayerComboHintHoverTipTitle,
-                SinglePlayerComboHintHoverTipDescription);
+                GetSinglePlayerLabel(),
+                GetSinglePlayerHoverTipTitle(),
+                GetSinglePlayerHoverTipDescription());
 
             (Control Row, NFastModeTickbox Tickbox) bubbleSetting = EnsureSettingRow(
                 content,
@@ -333,9 +376,9 @@ public static class ComboHintSettingsInjector
                 BubbleHintRowName,
                 BubbleHintDividerName,
                 BubbleHintTickboxName,
-                "气泡开关",
-                BubbleHintHoverTipTitle,
-                BubbleHintHoverTipDescription);
+                GetBubbleHintLabel(),
+                GetBubbleHintHoverTipTitle(),
+                GetBubbleHintHoverTipDescription());
 
             // Keep both settings rows anchored at the end of GeneralSettings.
             MoveRowWithDividerToBottom(content, fastModeRow, comboHeaderRow, ComboHintHeaderDividerName);
@@ -699,8 +742,10 @@ public static class ComboHintSettingsInjector
         tip.CustomMinimumSize = new Vector2(ComboHintHoverTipWidth, tip.CustomMinimumSize.Y);
         tip.Size = new Vector2(ComboHintHoverTipWidth, tip.Size.Y);
 
-        string titleText = row.HasMeta(HoverTipTitleMetaKey) ? row.GetMeta(HoverTipTitleMetaKey).ToString() ?? ComboHintHoverTipTitle : ComboHintHoverTipTitle;
-        string descriptionText = row.HasMeta(HoverTipDescriptionMetaKey) ? row.GetMeta(HoverTipDescriptionMetaKey).ToString() ?? ComboHintHoverTipDescription : ComboHintHoverTipDescription;
+        string defaultTitle = GetComboHintHoverTipTitle();
+        string defaultDescription = GetComboHintHoverTipDescription();
+        string titleText = row.HasMeta(HoverTipTitleMetaKey) ? row.GetMeta(HoverTipTitleMetaKey).ToString() ?? defaultTitle : defaultTitle;
+        string descriptionText = row.HasMeta(HoverTipDescriptionMetaKey) ? row.GetMeta(HoverTipDescriptionMetaKey).ToString() ?? defaultDescription : defaultDescription;
 
         MegaLabel? title = tip.GetNodeOrNull<MegaLabel>("%Title");
         if (title != null)

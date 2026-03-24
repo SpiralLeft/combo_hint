@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HarmonyLib;
 using Godot;
@@ -13,6 +14,7 @@ using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Potions;
 using MegaCrit.Sts2.Core.Hooks;
+using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Modding;
@@ -63,6 +65,12 @@ public static class ModEntry
     public static bool EnabledByGameplaySetting { get; private set; } = true;
 
     public static string ModRootPath { get; private set; } = string.Empty;
+
+    private static readonly object EnglishCardTitlesLock = new object();
+
+    private static Dictionary<string, string>? _englishCardTitlesById;
+
+    private static bool _englishCardTitlesLoaded;
 
     public static void Initialize()
     {
@@ -152,6 +160,164 @@ public static class ModEntry
     {
         // Legacy logger disabled temporarily; route concise information to UI log.
         LogUi($"LegacyInfo/{context}", message);
+    }
+
+    public static bool IsChineseLanguage(string? language)
+    {
+        if (string.IsNullOrWhiteSpace(language))
+        {
+            return false;
+        }
+
+        return language.StartsWith("zh", StringComparison.OrdinalIgnoreCase)
+            || language.Equals("zhs", StringComparison.OrdinalIgnoreCase)
+            || language.Equals("zht", StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static bool IsChineseUiLanguage()
+    {
+        string language = LocManager.Instance?.Language ?? "eng";
+        return IsChineseLanguage(language);
+    }
+
+    public static string GetLocalizedComboHintTitle()
+    {
+        return IsChineseUiLanguage() ? "连携提示" : "Combo Hints";
+    }
+
+    public static string GetLocalizedNoMatchText()
+    {
+        return IsChineseUiLanguage() ? "当前没有连携效果" : "No combo effects available";
+    }
+
+    public static string GetLocalizedKillTitle()
+    {
+        return IsChineseUiLanguage() ? "斩杀" : "Lethal";
+    }
+
+    public static string GetLocalizedHasConnector()
+    {
+        return IsChineseUiLanguage() ? "有" : " has ";
+    }
+
+    public static string GetLocalizedListSeparator()
+    {
+        return IsChineseUiLanguage() ? "、" : ", ";
+    }
+
+    public static string GetLocalizedBubblePrefix()
+    {
+        return IsChineseUiLanguage() ? "我有" : "I have ";
+    }
+
+    public static string GetLocalizedWeakText()
+    {
+        return IsChineseUiLanguage() ? "虚弱" : "Weak";
+    }
+
+    public static string GetLocalizedVulnerableText()
+    {
+        return IsChineseUiLanguage() ? "易伤" : "Vulnerable";
+    }
+
+    public static string GetDisplayCardTitleWithEnglish(CardModel card)
+    {
+        string modelId = card.Id.Entry;
+        string localizedTitle = card.Title ?? modelId;
+
+        string language = LocManager.Instance?.Language ?? "eng";
+        if (IsChineseLanguage(language))
+        {
+            return localizedTitle;
+        }
+
+        string? englishTitle = TryGetEnglishCardTitle(modelId);
+        if (string.IsNullOrWhiteSpace(englishTitle))
+        {
+            return localizedTitle;
+        }
+
+        return englishTitle;
+    }
+
+    private static string? TryGetEnglishCardTitle(string modelId)
+    {
+        EnsureEnglishCardTitlesLoaded();
+        if (_englishCardTitlesById == null)
+        {
+            return null;
+        }
+
+        return _englishCardTitlesById.TryGetValue(modelId, out string? title) ? title : null;
+    }
+
+    private static void EnsureEnglishCardTitlesLoaded()
+    {
+        if (_englishCardTitlesLoaded)
+        {
+            return;
+        }
+
+        lock (EnglishCardTitlesLock)
+        {
+            if (_englishCardTitlesLoaded)
+            {
+                return;
+            }
+
+            _englishCardTitlesById = LoadEnglishCardTitlesById();
+            _englishCardTitlesLoaded = true;
+            LogUi("CardTitle.EnglishLoaded", $"count={_englishCardTitlesById.Count}");
+        }
+    }
+
+    private static Dictionary<string, string> LoadEnglishCardTitlesById()
+    {
+        List<string> candidates = new List<string>
+        {
+            Path.Combine(Directory.GetCurrentDirectory(), "localization", "eng", "cards.json"),
+            Path.Combine(ResolveModRoot(), "..", "..", "localization", "eng", "cards.json")
+        };
+
+        foreach (string candidate in candidates)
+        {
+            try
+            {
+                string fullPath = Path.GetFullPath(candidate);
+                if (!File.Exists(fullPath))
+                {
+                    continue;
+                }
+
+                using JsonDocument doc = JsonDocument.Parse(File.ReadAllText(fullPath));
+                Dictionary<string, string> map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                foreach (JsonProperty property in doc.RootElement.EnumerateObject())
+                {
+                    if (!property.Name.EndsWith(".title", StringComparison.Ordinal) || property.Value.ValueKind != JsonValueKind.String)
+                    {
+                        continue;
+                    }
+
+                    string id = property.Name.Substring(0, property.Name.Length - ".title".Length);
+                    string? title = property.Value.GetString();
+                    if (!string.IsNullOrWhiteSpace(id) && !string.IsNullOrWhiteSpace(title))
+                    {
+                        map[id] = Regex.Replace(title.Trim(), "\\s+", " ");
+                    }
+                }
+
+                if (map.Count > 0)
+                {
+                    return map;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogUi("CardTitle.EnglishLoadError", ex.Message);
+            }
+        }
+
+        return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     }
 
     private static void LoadManifestSettings()
@@ -673,7 +839,7 @@ public static class AfterCardDrawnPatch
             return;
         }
 
-        string bubbleText = "\u6211\u6709" + string.Join("\u3001", handMatches.Select((MatchedTrigger m) => FormatColoredText(m.Text, m.ColorHex)));
+        string bubbleText = ModEntry.GetLocalizedBubblePrefix() + string.Join(ModEntry.GetLocalizedListSeparator(), handMatches.Select((MatchedTrigger m) => FormatColoredText(m.Text, m.ColorHex)));
         NSpeechBubbleVfx? bubble = NSpeechBubbleVfx.Create(bubbleText, ownerCreature, ModEntry.BubbleDurationSeconds);
         if (bubble != null)
         {
@@ -743,7 +909,7 @@ public static class AfterCardDrawnPatch
             return matches;
         }
 
-        string title = card.Title ?? modelId;
+        string title = ModEntry.GetDisplayCardTitleWithEnglish(card);
         HashSet<string> dedup = new HashSet<string>(StringComparer.Ordinal);
         foreach (TriggerGroup group in ModEntry.TriggerGroups)
         {
@@ -755,11 +921,11 @@ public static class AfterCardDrawnPatch
             string displayText;
             if (group.Key.Equals(SpecialWeakenGroupKey, StringComparison.OrdinalIgnoreCase))
             {
-                displayText = "虚弱";
+                displayText = ModEntry.GetLocalizedWeakText();
             }
             else if (group.Key.Equals(SpecialVulnerableGroupKey, StringComparison.OrdinalIgnoreCase))
             {
-                displayText = "易伤";
+                displayText = ModEntry.GetLocalizedVulnerableText();
             }
             else
             {
