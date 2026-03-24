@@ -1,59 +1,113 @@
 {
   "bubbleDurationSeconds": 3,
-  "triggerTexts_weakendefence": [
-    "易伤",
-    "夹击",
-    "击倒",
-    "暴露"
+  "triggerModelIds_weakendefence": [
+    "FLANKING",
+    "KNOCKDOWN",
+    "EXPOSE"
   ],
   "color_weakendefence": "#FF6B6B",
-  "triggerTexts_weakenattack": [
-    "虚弱",
-    "弱化之触",
-    "星灭",
-    "下砸",
-    "王之凝视",
-    "共鸣",
-    "尖啸",
-    "凌虐",
-    "萎靡",
-    "命运同担",
-    "黑暗镣铐"
+  "triggerModelIds_weakenattack": [
+    "ENFEEBLING_TOUCH",
+    "DYING_STAR",
+    "CRUSH_UNDER",
+    "MONARCHS_GAZE",
+    "RESONANCE",
+    "PIERCING_WAIL",
+    "MANGLE",
+    "MALAISE",
+    "SHARED_FATE",
+    "DARK_SHACKLES"
   ],
   "color_weakenattack": "#6EC1FF",
-  "triggerTexts_playerhelpbuff": [
-    "骸骨军团",
-    "协同配合",
-    "群起攻之",
-    "拦截",
-    "托举",
-    "集结",
-    "双打组合",
-    "恶魔护盾",
-    "鬼祟"
+  "triggerModelIds_specialweaken": [
+    "COMET",
+    "DEATHBRINGER",
+    "DEBILITATE",
+    "DEFY",
+    "DOUBT",
+    "FALLING_STAR",
+    "FOLLOW_THROUGH",
+    "GAMMA_BLAST",
+    "GO_FOR_THE_EYES",
+    "KNOW_THY_PLACE",
+    "LEG_SWEEP",
+    "MAD_SCIENCE",
+    "MALAISE",
+    "METEOR_SHOWER",
+    "NEUTRALIZE",
+    "NULL",
+    "PUTREFY",
+    "SHOCKWAVE",
+    "SUCKER_PUNCH",
+    "SUPPRESS",
+    "TRACKING",
+    "UPPERCUT"
+  ],
+  "color_specialweaken": "#6EC1FF",
+  "triggerModelIds_specialvulnerable": [
+    "ASSASSINATE",
+    "BASH",
+    "BEAM_CELL",
+    "BREAK",
+    "BULLY",
+    "COLOSSUS",
+    "COMET",
+    "CRUELTY",
+    "DEBILITATE",
+    "DISMANTLE",
+    "DOMINATE",
+    "EXPOSE",
+    "FALLING_STAR",
+    "FEAR",
+    "GAMMA_BLAST",
+    "HIGH_FIVE",
+    "KNOW_THY_PLACE",
+    "MAD_SCIENCE",
+    "METEOR_SHOWER",
+    "MOLTEN_FIST",
+    "PUTREFY",
+    "SHOCKWAVE",
+    "SQUASH",
+    "TAUNT",
+    "THUNDERCLAP",
+    "TREMBLE",
+    "UPPERCUT",
+    "VICIOUS"
+  ],
+  "color_specialvulnerable": "#FF6B6B",
+  "triggerModelIds_playerhelpbuff": [
+    "LEGION_OF_BONE",
+    "COORDINATE",
+    "GANG_UP",
+    "INTERCEPT",
+    "LIFT",
+    "RALLY",
+    "TAG_TEAM",
+    "DEMONIC_SHIELD",
+    "SNEAKY"
   ],
   "color_playerhelpbuff": "#93f67e",
-  "triggerTexts_playerhelpcards": [
-    "慷慨捐助",
-    "能量涌动",
-    "引火",
-    "相信着你",
-    "彼岸一瞥",
-    "抱团"
+  "triggerModelIds_playerhelpcards": [
+    "LARGESSE",
+    "ENERGY_SURGE",
+    "IGNITION",
+    "BELIEVE_IN_YOU",
+    "GLIMPSE_BEYOND",
+    "HUDDLE_UP"
   ],
   "color_playerhelpcards": "#f8c663",
-  "triggerTexts_other": [
-    "摧残",
-    "吹哨",
-    "紧勒"
+  "triggerModelIds_other": [
+    "DEBILITATE",
+    "WHISTLE",
+    "STRANGLE"
   ],
   "color_other": "#C9A6FF",
-  "overlayKillTriggerTexts": [
-    "贪婪之手",
-    "狂宴",
-    "决胜一击",
-    "分离",
-    "狩猎"
+  "overlayKillTriggerModelIds": [
+    "HAND_OF_GREED",
+    "FEED",
+    "KNOCKOUT_BLOW",
+    "SUNDER",
+    "THE_HUNT"
   ],
   "overlayKillColor": "#FF7F50",
   "overlayKillTitleColor": "#FF0000"

@@ -50,7 +50,7 @@ public static class ModEntry
 
     public static IReadOnlyList<TriggerGroup> TriggerGroups { get; private set; } = new List<TriggerGroup>();
 
-    public static TriggerGroup OverlayKillTriggerGroup { get; private set; } = TriggerGroup.From(null, "#FF7F50");
+    public static TriggerGroup OverlayKillTriggerGroup { get; private set; } = TriggerGroup.From("overlayKill", null, "#FF7F50");
 
     public static string OverlayKillTitleColorHex { get; private set; } = DefaultOverlayKillTitleColorHex;
 
@@ -72,8 +72,8 @@ public static class ModEntry
         ResetInjectLog();
 
         new Harmony(HarmonyId).PatchAll();
-        int totalTriggerCount = TriggerGroups.Sum((TriggerGroup g) => g.TriggerTexts.Count);
-        Log.Info($"[ComboHint] initialized, trigger groups: {TriggerGroups.Count}, trigger texts: {totalTriggerCount}, enableSinglePlayerHint: {EnableSinglePlayerHint}");
+        int totalTriggerCount = TriggerGroups.Sum((TriggerGroup g) => g.TriggerModelIds.Count);
+        Log.Info($"[ComboHint] initialized, trigger groups: {TriggerGroups.Count}, trigger model ids: {totalTriggerCount}, enableSinglePlayerHint: {EnableSinglePlayerHint}");
     }
 
     public static void ResetUiLog()
@@ -350,7 +350,7 @@ public static class ModEntry
             LogErrorToFile("LoadConfig", ex);
             TriggerGroups = new List<TriggerGroup>();
             EnabledByGameplaySetting = true;
-            OverlayKillTriggerGroup = TriggerGroup.From(null, "#FF7F50");
+            OverlayKillTriggerGroup = TriggerGroup.From("overlayKill", null, "#FF7F50");
             OverlayKillTitleColorHex = DefaultOverlayKillTitleColorHex;
             BubbleDurationSeconds = DefaultBubbleDurationSeconds;
         }
@@ -376,10 +376,14 @@ public static class ModEntry
 
     private static TriggerGroup ReadOverlayKillTriggerGroup(JsonElement root)
     {
-        List<string>? triggerTexts = null;
-        if (root.TryGetProperty("overlayKillTriggerTexts", out JsonElement triggerTextsElement))
+        List<string>? triggerModelIds = null;
+        if (root.TryGetProperty("overlayKillTriggerModelIds", out JsonElement triggerModelIdsElement))
         {
-            triggerTexts = ReadStringArray(triggerTextsElement);
+            triggerModelIds = ReadStringArray(triggerModelIdsElement);
+        }
+        else if (root.TryGetProperty("overlayKillTriggerTexts", out JsonElement legacyTriggerTextsElement))
+        {
+            triggerModelIds = ReadStringArray(legacyTriggerTextsElement);
         }
 
         string? color = null;
@@ -388,7 +392,7 @@ public static class ModEntry
             color = colorElement.GetString();
         }
 
-        return TriggerGroup.From(triggerTexts, color);
+        return TriggerGroup.From("overlayKill", triggerModelIds, color);
     }
 
     private static string ReadOverlayKillTitleColor(JsonElement root)
@@ -411,13 +415,13 @@ public static class ModEntry
         List<TriggerGroup> groups = new List<TriggerGroup>();
         foreach (JsonProperty property in root.EnumerateObject())
         {
-            if (!property.Name.StartsWith("triggerTexts_", StringComparison.Ordinal))
+            if (!property.Name.StartsWith("triggerModelIds_", StringComparison.Ordinal))
             {
                 continue;
             }
 
-            List<string>? triggerTexts = ReadStringArray(property.Value);
-            string suffix = property.Name.Substring("triggerTexts_".Length);
+            List<string>? triggerModelIds = ReadStringArray(property.Value);
+            string suffix = property.Name.Substring("triggerModelIds_".Length);
             string colorKey = "color_" + suffix;
             string? color = null;
             if (root.TryGetProperty(colorKey, out JsonElement colorElement) && colorElement.ValueKind == JsonValueKind.String)
@@ -425,8 +429,8 @@ public static class ModEntry
                 color = colorElement.GetString();
             }
 
-            TriggerGroup group = TriggerGroup.From(triggerTexts, color);
-            if (group.TriggerTexts.Count > 0)
+            TriggerGroup group = TriggerGroup.From(suffix, triggerModelIds, color);
+            if (group.TriggerModelIds.Count > 0)
             {
                 groups.Add(group);
             }
@@ -475,16 +479,20 @@ public static class ModEntry
     }
 }
 
-[HarmonyPatch(typeof(Hook), nameof(Hook.AfterCardDrawn))]
+[HarmonyPatch(typeof(Hook), nameof(Hook.AfterCardChangedPiles))]
 public static class AfterCardDrawnPatch
 {
-    private const double DrawBurstDebounceSeconds = 0.3;
+    private const double HandEntryDebounceSeconds = 0.3;
+    private const string SpecialWeakenGroupKey = "specialweaken";
+    private const string SpecialVulnerableGroupKey = "specialvulnerable";
 
     private static readonly Dictionary<ulong, int> PendingDrawVersionByPlayer = new Dictionary<ulong, int>();
 
-    private static readonly Dictionary<ulong, string> LastShownSignatureByPlayer = new Dictionary<ulong, string>();
+    private static readonly Dictionary<ulong, BubbleWindowSnapshot> ActiveWindowSnapshotByPlayer = new Dictionary<ulong, BubbleWindowSnapshot>();
 
     private static ulong _lastCombatCreatedMsec;
+
+    private readonly record struct BubbleWindowSnapshot(int WindowStartVersion, string BaselineSignature);
 
     public static void EnsureCombatStateFresh()
     {
@@ -499,20 +507,21 @@ public static class AfterCardDrawnPatch
             PendingDrawVersionByPlayer.Clear();
         }
 
-        lock (LastShownSignatureByPlayer)
+        lock (ActiveWindowSnapshotByPlayer)
         {
-            LastShownSignatureByPlayer.Clear();
+            ActiveWindowSnapshotByPlayer.Clear();
         }
 
         _lastCombatCreatedMsec = createdMsec;
     }
 
-    public static void Postfix(CardModel card)
+    public static void Postfix(CardModel card, PileType oldPile)
     {
         try
         {
             if (card == null || card.Owner?.Creature == null)
             {
+                ModEntry.LogUi("BubbleGate.Skip", "reason=card_or_owner_null");
                 return;
             }
 
@@ -520,13 +529,23 @@ public static class AfterCardDrawnPatch
             bool overlayEnabled = ModEntry.IsOverlayEnabledInCurrentRun();
             if (!bubbleEnabled && !overlayEnabled)
             {
+                ModEntry.LogUi("BubbleGate.Skip", $"reason=all_disabled, card={card.Id.Entry}, oldPile={oldPile}, newPile={card.Pile?.Type}");
                 return;
             }
 
             EnsureCombatStateFresh();
+
+            bool enteredHand = card.Pile?.Type == PileType.Hand && oldPile != PileType.Hand;
+            ModEntry.LogUi("BubbleGate.Event", $"card={card.Id.Entry}, oldPile={oldPile}, newPile={card.Pile?.Type}, enteredHand={enteredHand}, bubbleEnabled={bubbleEnabled}, overlayEnabled={overlayEnabled}");
+            if (!enteredHand)
+            {
+                ModEntry.LogUi("BubbleGate.Skip", $"reason=not_entered_hand, card={card.Id.Entry}");
+                return;
+            }
+
             if (bubbleEnabled)
             {
-                ScheduleHandCheck(card.Owner.Creature);
+                OnCardEnteredHand(card);
             }
 
             if (overlayEnabled)
@@ -537,14 +556,40 @@ public static class AfterCardDrawnPatch
         }
         catch (Exception ex)
         {
-            Log.Error($"[ComboHint] failed in draw hook: {ex}");
+            Log.Error($"[ComboHint] failed in hand-entry hook: {ex}");
             ModEntry.LogErrorToFile("AfterCardDrawnPatch.Postfix", ex);
         }
     }
 
-    private static void ScheduleHandCheck(Creature ownerCreature)
+    private static void OnCardEnteredHand(CardModel card)
     {
+        Creature ownerCreature = card.Owner!.Creature;
         ulong netId = ownerCreature.Player?.NetId ?? 0UL;
+
+        bool hasActiveWindow;
+        lock (PendingDrawVersionByPlayer)
+        {
+            hasActiveWindow = PendingDrawVersionByPlayer.ContainsKey(netId);
+        }
+
+        ModEntry.LogUi("BubbleGate.HandEntry", $"card={card.Id.Entry}, netId={netId}, hasActiveWindow={hasActiveWindow}");
+
+        bool cardMatched = DoesCardMatchAnyTrigger(card);
+        if (!hasActiveWindow && !cardMatched)
+        {
+            ModEntry.LogUi("BubbleGate.Skip", $"reason=first_card_not_matched, card={card.Id.Entry}, netId={netId}");
+            return;
+        }
+
+        if (!hasActiveWindow && cardMatched)
+        {
+            ModEntry.LogUi("BubbleGate.WindowStart", $"card={card.Id.Entry}, netId={netId}");
+        }
+        else if (hasActiveWindow)
+        {
+            ModEntry.LogUi("BubbleGate.WindowRefresh", $"card={card.Id.Entry}, netId={netId}");
+        }
+
         int version;
         lock (PendingDrawVersionByPlayer)
         {
@@ -557,43 +602,74 @@ public static class AfterCardDrawnPatch
             PendingDrawVersionByPlayer[netId] = version;
         }
 
-        _ = EmitSingleBubbleAfterDrawBurst(ownerCreature, netId, version);
+        if (!hasActiveWindow && cardMatched)
+        {
+            IReadOnlyList<CardModel> currentHand = ownerCreature.Player?.PlayerCombatState?.Hand?.Cards ?? Array.Empty<CardModel>();
+            List<MatchedTrigger> baselineMatches = FindMatchedTextsInHandExcludingCard(currentHand, card);
+            string baselineSignature = BuildSignature(baselineMatches);
+            lock (ActiveWindowSnapshotByPlayer)
+            {
+                ActiveWindowSnapshotByPlayer[netId] = new BubbleWindowSnapshot(version, baselineSignature);
+            }
+            ModEntry.LogUi("BubbleGate.WindowBaseline", $"netId={netId}, startVersion={version}, baseline={baselineSignature}");
+        }
+
+        ModEntry.LogUi("BubbleGate.WindowVersion", $"netId={netId}, version={version}");
+
+        _ = EmitSingleBubbleAfterWindow(ownerCreature, netId, version);
     }
 
-    private static async Task EmitSingleBubbleAfterDrawBurst(Creature ownerCreature, ulong netId, int expectedVersion)
+    private static bool DoesCardMatchAnyTrigger(CardModel card)
     {
-        SceneTreeTimer timer = ((SceneTree)Engine.GetMainLoop()).CreateTimer(DrawBurstDebounceSeconds);
+        int matchCount = FindMatchedTriggersForCard(card).Count;
+        ModEntry.LogUi("BubbleGate.CardMatch", $"card={card.Id.Entry}, matchCount={matchCount}");
+        return matchCount > 0;
+    }
+
+    private static async Task EmitSingleBubbleAfterWindow(Creature ownerCreature, ulong netId, int expectedVersion)
+    {
+        SceneTreeTimer timer = ((SceneTree)Engine.GetMainLoop()).CreateTimer(HandEntryDebounceSeconds);
         await timer.ToSignal(timer, SceneTreeTimer.SignalName.Timeout);
 
         lock (PendingDrawVersionByPlayer)
         {
             if (!PendingDrawVersionByPlayer.TryGetValue(netId, out int latestVersion) || latestVersion != expectedVersion)
             {
+                ModEntry.LogUi("BubbleGate.WindowCancel", $"netId={netId}, expectedVersion={expectedVersion}");
                 return;
             }
+
+            PendingDrawVersionByPlayer.Remove(netId);
         }
+
+        ModEntry.LogUi("BubbleGate.WindowCommit", $"netId={netId}, version={expectedVersion}");
 
         IReadOnlyList<CardModel> handCards = ownerCreature.Player?.PlayerCombatState?.Hand?.Cards ?? Array.Empty<CardModel>();
         List<MatchedTrigger> handMatches = FindMatchedTextsInHand(handCards);
-        string currentSignature = string.Join("|", handMatches.Select((MatchedTrigger m) => $"{m.ColorHex}:{m.Text}"));
+        string currentSignature = BuildSignature(handMatches);
 
-        lock (LastShownSignatureByPlayer)
+        BubbleWindowSnapshot? snapshot = null;
+        lock (ActiveWindowSnapshotByPlayer)
         {
-            if (!LastShownSignatureByPlayer.TryGetValue(netId, out string? lastShown))
+            if (ActiveWindowSnapshotByPlayer.TryGetValue(netId, out BubbleWindowSnapshot value))
             {
-                lastShown = string.Empty;
+                snapshot = value;
             }
 
-            if (currentSignature == lastShown)
-            {
-                return;
-            }
+            ActiveWindowSnapshotByPlayer.Remove(netId);
+        }
 
-            LastShownSignatureByPlayer[netId] = currentSignature;
+        ModEntry.LogUi("BubbleGate.FinalScan", $"netId={netId}, handCount={handCards.Count}, matchCount={handMatches.Count}, signature={currentSignature}, baseline={(snapshot?.BaselineSignature ?? "<none>")}");
+
+        if (snapshot.HasValue && currentSignature == snapshot.Value.BaselineSignature)
+        {
+            ModEntry.LogUi("BubbleGate.Skip", $"reason=window_no_change, netId={netId}, startVersion={snapshot.Value.WindowStartVersion}");
+            return;
         }
 
         if (handMatches.Count == 0)
         {
+            ModEntry.LogUi("BubbleGate.Skip", $"reason=no_matches_after_window, netId={netId}");
             return;
         }
 
@@ -602,6 +678,11 @@ public static class AfterCardDrawnPatch
         if (bubble != null)
         {
             NCombatRoom.Instance?.CombatVfxContainer.AddChild(bubble);
+            ModEntry.LogUi("BubbleGate.Emit", $"netId={netId}, text={bubbleText}");
+        }
+        else
+        {
+            ModEntry.LogUi("BubbleGate.Skip", $"reason=bubble_create_failed, netId={netId}");
         }
     }
 
@@ -612,11 +693,9 @@ public static class AfterCardDrawnPatch
 
         foreach (CardModel handCard in handCards)
         {
-            string title = handCard.Title ?? string.Empty;
-            string description = handCard.GetDescriptionForPile(handCard.Pile?.Type ?? PileType.None);
-            foreach (MatchedTrigger matched in FindMatchedTexts(title, description))
+            foreach (MatchedTrigger matched in FindMatchedTriggersForCard(handCard))
             {
-                if (dedup.Add(matched.Text))
+                if (dedup.Add(BuildMatchDedupKey(matched)))
                 {
                     matches.Add(matched);
                 }
@@ -626,21 +705,79 @@ public static class AfterCardDrawnPatch
         return matches;
     }
 
-    private static List<MatchedTrigger> FindMatchedTexts(string title, string description)
+    private static List<MatchedTrigger> FindMatchedTextsInHandExcludingCard(IEnumerable<CardModel> handCards, CardModel excludedCard)
     {
         List<MatchedTrigger> matches = new List<MatchedTrigger>();
         HashSet<string> dedup = new HashSet<string>(StringComparer.Ordinal);
-        foreach (TriggerGroup group in ModEntry.TriggerGroups)
+
+        foreach (CardModel handCard in handCards)
         {
-            foreach (string triggerText in group.TriggerTexts)
+            if (ReferenceEquals(handCard, excludedCard))
             {
-                if (((!string.IsNullOrEmpty(title) && title.Contains(triggerText, StringComparison.Ordinal)) || (!string.IsNullOrEmpty(description) && description.Contains(triggerText, StringComparison.Ordinal))) && dedup.Add(triggerText))
+                continue;
+            }
+
+            foreach (MatchedTrigger matched in FindMatchedTriggersForCard(handCard))
+            {
+                if (dedup.Add(BuildMatchDedupKey(matched)))
                 {
-                    matches.Add(new MatchedTrigger(triggerText, group.ColorHex));
+                    matches.Add(matched);
                 }
             }
         }
+
         return matches;
+    }
+
+    private static string BuildSignature(IEnumerable<MatchedTrigger> matches)
+    {
+        return string.Join("|", matches.Select((MatchedTrigger m) => $"{m.ColorHex}:{m.Text}"));
+    }
+
+    private static List<MatchedTrigger> FindMatchedTriggersForCard(CardModel card)
+    {
+        List<MatchedTrigger> matches = new List<MatchedTrigger>();
+        string modelId = card.Id.Entry;
+        if (string.IsNullOrWhiteSpace(modelId))
+        {
+            return matches;
+        }
+
+        string title = card.Title ?? modelId;
+        HashSet<string> dedup = new HashSet<string>(StringComparer.Ordinal);
+        foreach (TriggerGroup group in ModEntry.TriggerGroups)
+        {
+            if (!group.TriggerModelIds.Contains(modelId))
+            {
+                continue;
+            }
+
+            string displayText;
+            if (group.Key.Equals(SpecialWeakenGroupKey, StringComparison.OrdinalIgnoreCase))
+            {
+                displayText = "虚弱";
+            }
+            else if (group.Key.Equals(SpecialVulnerableGroupKey, StringComparison.OrdinalIgnoreCase))
+            {
+                displayText = "易伤";
+            }
+            else
+            {
+                displayText = title;
+            }
+
+            string dedupKey = group.ColorHex + "|" + displayText;
+            if (dedup.Add(dedupKey))
+            {
+                matches.Add(new MatchedTrigger(displayText, group.ColorHex));
+            }
+        }
+        return matches;
+    }
+
+    private static string BuildMatchDedupKey(MatchedTrigger match)
+    {
+        return match.ColorHex + "|" + match.Text;
     }
 
     private static string FormatColoredText(string text, string colorHex)
@@ -764,21 +901,24 @@ public static class AfterSideTurnStartPatch
 
 public sealed class TriggerGroup
 {
-    public IReadOnlyList<string> TriggerTexts { get; }
+    public string Key { get; }
+
+    public IReadOnlySet<string> TriggerModelIds { get; }
 
     public string ColorHex { get; }
 
-    private TriggerGroup(IReadOnlyList<string> triggerTexts, string colorHex)
+    private TriggerGroup(string key, IReadOnlySet<string> triggerModelIds, string colorHex)
     {
-        TriggerTexts = triggerTexts;
+        Key = key;
+        TriggerModelIds = triggerModelIds;
         ColorHex = colorHex;
     }
 
-    public static TriggerGroup From(List<string>? rawTexts, string? rawColor)
+    public static TriggerGroup From(string key, List<string>? rawModelIds, string? rawColor)
     {
-        List<string> triggerTexts = rawTexts?.Where((string s) => !string.IsNullOrWhiteSpace(s)).Select((string s) => s.Trim()).Distinct(StringComparer.Ordinal).ToList() ?? new List<string>();
+        HashSet<string> triggerModelIds = rawModelIds?.Where((string s) => !string.IsNullOrWhiteSpace(s)).Select((string s) => s.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).ToHashSet(StringComparer.OrdinalIgnoreCase) ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         string colorHex = NormalizeColor(rawColor);
-        return new TriggerGroup(triggerTexts, colorHex);
+        return new TriggerGroup(key, triggerModelIds, colorHex);
     }
 
     private static string NormalizeColor(string? rawColor)

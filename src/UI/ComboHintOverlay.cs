@@ -147,6 +147,8 @@ public partial class ComboHintOverlayNode : PanelContainer
     private const string DefaultNoMatchText = "当前没有连携效果";
     private const float HoveredAlpha = 1.0f;
     private const float IdleAlpha = 0.5f;
+    private const string SpecialWeakenGroupKey = "specialweaken";
+    private const string SpecialVulnerableGroupKey = "specialvulnerable";
 
     private Control _hoverTipBox = null!;
     private MegaLabel _titleLabel = null!;
@@ -396,7 +398,7 @@ public partial class ComboHintOverlayNode : PanelContainer
             }
 
             List<string> overlayKillLines = new List<string>();
-            if (ModEntry.OverlayKillTriggerGroup.TriggerTexts.Count > 0)
+            if (ModEntry.OverlayKillTriggerGroup.TriggerModelIds.Count > 0)
             {
                 foreach (Creature playerCreature in players)
                 {
@@ -535,11 +537,9 @@ public partial class ComboHintOverlayNode : PanelContainer
 
         foreach (CardModel handCard in handCards)
         {
-            string title = handCard.Title ?? string.Empty;
-            string description = handCard.GetDescriptionForPile(handCard.Pile?.Type ?? PileType.None);
-            foreach (MatchedTrigger matched in FindMatchedTexts(title, description))
+            foreach (MatchedTrigger matched in FindMatchedTexts(handCard))
             {
-                if (dedup.Add(matched.Text))
+                if (dedup.Add(BuildMatchDedupKey(matched)))
                 {
                     matches.Add(matched);
                 }
@@ -556,36 +556,68 @@ public partial class ComboHintOverlayNode : PanelContainer
 
         foreach (CardModel handCard in handCards)
         {
-            string title = handCard.Title ?? string.Empty;
-            string description = handCard.GetDescriptionForPile(handCard.Pile?.Type ?? PileType.None);
-            foreach (string triggerText in group.TriggerTexts)
+            string modelId = handCard.Id.Entry;
+            if (string.IsNullOrWhiteSpace(modelId) || !group.TriggerModelIds.Contains(modelId))
             {
-                if (((!string.IsNullOrEmpty(title) && title.Contains(triggerText, StringComparison.Ordinal)) || (!string.IsNullOrEmpty(description) && description.Contains(triggerText, StringComparison.Ordinal))) && dedup.Add(triggerText))
-                {
-                    matches.Add(new MatchedTrigger(triggerText, group.ColorHex));
-                }
+                continue;
+            }
+
+            string displayText = handCard.Title ?? modelId;
+            string dedupKey = group.ColorHex + "|" + displayText;
+            if (dedup.Add(dedupKey))
+            {
+                matches.Add(new MatchedTrigger(displayText, group.ColorHex));
             }
         }
 
         return matches;
     }
 
-    private static List<MatchedTrigger> FindMatchedTexts(string title, string description)
+    private static List<MatchedTrigger> FindMatchedTexts(CardModel card)
     {
         List<MatchedTrigger> matches = new List<MatchedTrigger>();
         HashSet<string> dedup = new HashSet<string>(StringComparer.Ordinal);
+        string modelId = card.Id.Entry;
+        if (string.IsNullOrWhiteSpace(modelId))
+        {
+            return matches;
+        }
+
+        string title = card.Title ?? modelId;
         foreach (TriggerGroup group in ModEntry.TriggerGroups)
         {
-            foreach (string triggerText in group.TriggerTexts)
+            if (!group.TriggerModelIds.Contains(modelId))
             {
-                if (((!string.IsNullOrEmpty(title) && title.Contains(triggerText, StringComparison.Ordinal)) || (!string.IsNullOrEmpty(description) && description.Contains(triggerText, StringComparison.Ordinal))) && dedup.Add(triggerText))
-                {
-                    matches.Add(new MatchedTrigger(triggerText, group.ColorHex));
-                }
+                continue;
+            }
+
+            string displayText;
+            if (group.Key.Equals(SpecialWeakenGroupKey, StringComparison.OrdinalIgnoreCase))
+            {
+                displayText = "虚弱";
+            }
+            else if (group.Key.Equals(SpecialVulnerableGroupKey, StringComparison.OrdinalIgnoreCase))
+            {
+                displayText = "易伤";
+            }
+            else
+            {
+                displayText = title;
+            }
+
+            string dedupKey = group.ColorHex + "|" + displayText;
+            if (dedup.Add(dedupKey))
+            {
+                matches.Add(new MatchedTrigger(displayText, group.ColorHex));
             }
         }
 
         return matches;
+    }
+
+    private static string BuildMatchDedupKey(MatchedTrigger match)
+    {
+        return match.ColorHex + "|" + match.Text;
     }
 
     private static string FormatColoredText(string text, string colorHex)
