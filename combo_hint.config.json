@@ -1,58 +1,60 @@
 {
   "bubbleDurationSeconds": 3,
   "triggerTexts_weakendefence": [
-    "\u6613\u4F24",
-    "\u5939\u51FB",
-    "\u51FB\u5012",
-    "\u66B4\u9732"
+    "易伤",
+    "夹击",
+    "击倒",
+    "暴露"
   ],
   "color_weakendefence": "#FF6B6B",
   "triggerTexts_weakenattack": [
-    "\u865A\u5F31",
-    "\u5F31\u5316\u4E4B\u89E6",
-    "\u661F\u706D",
-    "\u738B\u4E4B\u51DD\u89C6",
-    "\u5171\u9E23",
-    "\u5C16\u5578",
-    "\u51CC\u8650",
-    "\u840E\u9761",
-    "\u547D\u8FD0\u540C\u62C5",
-    "\u9ED1\u6697\u9563\u94D0"
+    "虚弱",
+    "弱化之触",
+    "星灭",
+    "下砸",
+    "王之凝视",
+    "共鸣",
+    "尖啸",
+    "凌虐",
+    "萎靡",
+    "命运同担",
+    "黑暗镣铐"
   ],
   "color_weakenattack": "#6EC1FF",
   "triggerTexts_playerhelpbuff": [
-    "\u9AB8\u9AA8\u519B\u56E2",
-    "\u534F\u540C\u914D\u5408",
-    "\u7FA4\u8D77\u653B\u4E4B",
-    "\u62E6\u622A",
-    "\u6258\u4E3E",
-    "\u96C6\u7ED3",
-    "\u53CC\u6253\u7EC4\u5408",
-    "\u6076\u9B54\u62A4\u76FE",
-    "\u9B3C\u795F"
+    "骸骨军团",
+    "协同配合",
+    "群起攻之",
+    "拦截",
+    "托举",
+    "集结",
+    "双打组合",
+    "恶魔护盾",
+    "鬼祟"
   ],
   "color_playerhelpbuff": "#93f67e",
   "triggerTexts_playerhelpcards": [
-    "\u6177\u6168\u6350\u52A9",
-    "\u80FD\u91CF\u6D8C\u52A8",
-    "\u5F15\u706B",
-    "\u76F8\u4FE1\u7740\u4F60",
-    "\u5F7C\u5CB8\u4E00\u77A5",
-    "\u62B1\u56E2"
+    "慷慨捐助",
+    "能量涌动",
+    "引火",
+    "相信着你",
+    "彼岸一瞥",
+    "抱团"
   ],
   "color_playerhelpcards": "#f8c663",
   "triggerTexts_other": [
-    "\u6467\u6B8B",
-    "\u5439\u54E8",
-    "\u7D27\u52D2"
+    "摧残",
+    "吹哨",
+    "紧勒"
   ],
   "color_other": "#C9A6FF",
   "overlayKillTriggerTexts": [
-    "\u8D2A\u5A6A\u4E4B\u624B",
-    "\u72C2\u5BB4",
-    "\u72E9\u730E"
+    "贪婪之手",
+    "狂宴",
+    "决胜一击",
+    "分离",
+    "狩猎"
   ],
   "overlayKillColor": "#FF7F50",
-  "overlayKillTitleColor": "#FF0000",
-  "comboHintEnabled": true
+  "overlayKillTitleColor": "#FF0000"
 }

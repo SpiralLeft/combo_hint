@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
@@ -29,11 +30,19 @@ public static class ModEntry
     private const string ModId = "ComboHint";
 
     private const string ConfigFileName = "combo_hint.config.json";
+    private const string ManifestFileName = "combo_hint.json";
 
     private const string UiLogFileName = "combo_hint.ui.log";
     private const string InjectLogFileName = "combo_hint.inject.log";
 
     private const string ConfigEnabledKey = "comboHintEnabled";
+    private const string EnableSinglePlayerHintKey = "enableSinglePlayerHint";
+    private const string BubbleEnabledKey = "bubbleHintEnabled";
+    private static readonly JsonSerializerOptions PrettyReadableJsonOptions = new JsonSerializerOptions
+    {
+        WriteIndented = true,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    };
 
     private const double DefaultBubbleDurationSeconds = 1.8;
 
@@ -48,6 +57,8 @@ public static class ModEntry
     public static double BubbleDurationSeconds { get; private set; } = DefaultBubbleDurationSeconds;
 
     public static bool EnableSinglePlayerHint { get; private set; } = true;
+
+    public static bool EnableBubbleHint { get; private set; } = true;
 
     public static bool EnabledByGameplaySetting { get; private set; } = true;
 
@@ -157,7 +168,19 @@ public static class ModEntry
                     try
                     {
                         using JsonDocument doc = JsonDocument.Parse(File.ReadAllText(manifestPath));
-                        if (doc.RootElement.TryGetProperty("enableSinglePlayerHint", out JsonElement el))
+                        if (doc.RootElement.TryGetProperty(ConfigEnabledKey, out JsonElement comboHintEnabledElement))
+                        {
+                            if (comboHintEnabledElement.ValueKind == JsonValueKind.True)
+                            {
+                                EnabledByGameplaySetting = true;
+                            }
+                            else if (comboHintEnabledElement.ValueKind == JsonValueKind.False)
+                            {
+                                EnabledByGameplaySetting = false;
+                            }
+                        }
+
+                        if (doc.RootElement.TryGetProperty(EnableSinglePlayerHintKey, out JsonElement el))
                         {
                             if (el.ValueKind == JsonValueKind.True)
                             {
@@ -166,6 +189,18 @@ public static class ModEntry
                             else if (el.ValueKind == JsonValueKind.False)
                             {
                                 EnableSinglePlayerHint = false;
+                            }
+                        }
+
+                        if (doc.RootElement.TryGetProperty(BubbleEnabledKey, out JsonElement bubbleEnabledElement))
+                        {
+                            if (bubbleEnabledElement.ValueKind == JsonValueKind.True)
+                            {
+                                EnableBubbleHint = true;
+                            }
+                            else if (bubbleEnabledElement.ValueKind == JsonValueKind.False)
+                            {
+                                EnableBubbleHint = false;
                             }
                         }
                     }
@@ -199,6 +234,11 @@ public static class ModEntry
 
     public static bool IsBubbleEnabledInCurrentRun()
     {
+        if (!EnableBubbleHint)
+        {
+            return false;
+        }
+
         if (!EnableSinglePlayerHint && (RunManager.Instance?.IsSinglePlayerOrFakeMultiplayer ?? false))
         {
             return false;
@@ -215,15 +255,39 @@ public static class ModEntry
         }
 
         EnabledByGameplaySetting = enabled;
-        SaveEnabledSettingToConfig();
+        SaveManifestBool(ConfigEnabledKey, EnabledByGameplaySetting);
         LogUi("GameplaySetting.ComboHint", $"enabled={enabled}");
     }
 
-    private static void SaveEnabledSettingToConfig()
+    public static void SetEnableSinglePlayerHintByGameplaySetting(bool enabled)
+    {
+        if (EnableSinglePlayerHint == enabled)
+        {
+            return;
+        }
+
+        EnableSinglePlayerHint = enabled;
+        SaveManifestBool(EnableSinglePlayerHintKey, EnableSinglePlayerHint);
+        LogUi("GameplaySetting.SinglePlayerComboHint", $"enabled={enabled}");
+    }
+
+    public static void SetBubbleHintByGameplaySetting(bool enabled)
+    {
+        if (EnableBubbleHint == enabled)
+        {
+            return;
+        }
+
+        EnableBubbleHint = enabled;
+        SaveManifestBool(BubbleEnabledKey, EnableBubbleHint);
+        LogUi("GameplaySetting.BubbleHint", $"enabled={enabled}");
+    }
+
+    private static void SaveManifestBool(string key, bool value)
     {
         try
         {
-            string configPath = Path.Combine(ResolveModRoot(), ConfigFileName);
+            string configPath = Path.Combine(ResolveModRoot(), ManifestFileName);
             JsonObject rootObject;
             if (File.Exists(configPath))
             {
@@ -235,13 +299,13 @@ public static class ModEntry
                 rootObject = new JsonObject();
             }
 
-            rootObject[ConfigEnabledKey] = EnabledByGameplaySetting;
-            string output = rootObject.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
+            rootObject[key] = value;
+            string output = rootObject.ToJsonString(PrettyReadableJsonOptions);
             File.WriteAllText(configPath, output);
         }
         catch (Exception ex)
         {
-            Log.Warn($"[ComboHint] failed to write {ConfigFileName}: {ex.Message}");
+            Log.Warn($"[ComboHint] failed to write {ManifestFileName}: {ex.Message}");
         }
     }
 
@@ -270,11 +334,11 @@ public static class ModEntry
 
             string json = File.ReadAllText(configPath);
             using JsonDocument doc = JsonDocument.Parse(json);
-            EnabledByGameplaySetting = ReadEnabledSetting(doc.RootElement);
             TriggerGroups = BuildTriggerGroups(doc.RootElement);
             OverlayKillTriggerGroup = ReadOverlayKillTriggerGroup(doc.RootElement);
             OverlayKillTitleColorHex = ReadOverlayKillTitleColor(doc.RootElement);
             BubbleDurationSeconds = ReadBubbleDurationSeconds(doc.RootElement);
+            RewriteConfigWithReadableChinese(configPath, doc.RootElement);
             if (TriggerGroups.Count == 0)
             {
                 Log.Warn("[ComboHint] no valid trigger groups in config, trigger groups will be empty.");
@@ -292,22 +356,22 @@ public static class ModEntry
         }
     }
 
-    private static bool ReadEnabledSetting(JsonElement root)
+    private static void RewriteConfigWithReadableChinese(string configPath, JsonElement root)
     {
-        if (root.TryGetProperty(ConfigEnabledKey, out JsonElement enabledElement))
+        try
         {
-            if (enabledElement.ValueKind == JsonValueKind.True)
+            JsonNode? node = JsonNode.Parse(root.GetRawText());
+            if (node is JsonObject obj)
             {
-                return true;
-            }
-
-            if (enabledElement.ValueKind == JsonValueKind.False)
-            {
-                return false;
+                obj.Remove(ConfigEnabledKey);
+                obj.Remove(BubbleEnabledKey);
+                string output = obj.ToJsonString(PrettyReadableJsonOptions);
+                File.WriteAllText(configPath, output);
             }
         }
-
-        return true;
+        catch
+        {
+        }
     }
 
     private static TriggerGroup ReadOverlayKillTriggerGroup(JsonElement root)
