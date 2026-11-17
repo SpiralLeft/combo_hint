@@ -1,0 +1,11 @@
+{
+  "id": "ComboHintScenarioTests",
+  "name": "ComboHint Scenario Tests (isolated development only)",
+  "author": "spiraleaf",
+  "description": "Scenario runner bridge and live UI assertions. Never install in a normal game.",
+  "version": "0.1.0",
+  "has_dll": true,
+  "has_pck": false,
+  "affects_gameplay": true,
+  "dependencies": [{ "id": "ComboHint", "min_version": "0.5.1" }]
+}

@@ -1,25 +1,32 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Godot.NET.Sdk/4.5.1">
+  <Import Project="GamePaths.props" />
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <LangVersion>13.0</LangVersion>
     <Nullable>enable</Nullable>
     <AssemblyName>ComboHint</AssemblyName>
-    <OutputPath>./</OutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <Version>5.3</Version>
+    <RootNamespace>ComboHint</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <OutputPath>bin/$(Configuration)/</OutputPath>
+    <GodotDisabledSourceGenerators>GodotPluginsInitializer</GodotDisabledSourceGenerators>
+    <NoWarn>$(NoWarn);MSB3270</NoWarn>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Lib.Harmony" Version="2.3.3" />
-    <Reference Include="sts2">
-      <HintPath>./sts2.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="GodotSharp">
-      <HintPath>C:\Users\spira\.nuget\packages\godotsharp\4.5.1\lib\net8.0\GodotSharp.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
+    <Compile Include="src/**/*.cs" />
+    <PackageReference Include="Alchyr.Sts2.BaseLib" Version="3.4.8" PrivateAssets="all" />
+    <Reference Include="sts2" HintPath="$(Sts2DataDir)/sts2.dll" Private="false" />
+    <Reference Include="0Harmony" HintPath="$(Sts2DataDir)/0Harmony.dll" Private="false" />
   </ItemGroup>
+  <Target Name="CheckGamePath" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('$(Sts2DataDir)/sts2.dll')"
+           Text="Cannot find sts2.dll. Set Sts2Path in local.props or pass -p:Sts2Path=the-game-folder." />
+  </Target>
+  <Target Name="CreateModDistribution" AfterTargets="Build">
+    <PropertyGroup><ModDistribution>$(MSBuildProjectDirectory)/dist/ComboHint</ModDistribution></PropertyGroup>
+    <MakeDir Directories="$(ModDistribution)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModDistribution)" />
+    <Copy SourceFiles="combo_hint.json" DestinationFiles="$(ModDistribution)/ComboHint.json" />
+    <Copy SourceFiles="combo_hint.config.json" DestinationFolder="$(ModDistribution)" />
+  </Target>
 </Project>

@@ -1,0 +1,991 @@
+{
+  "game_version": "v0.113.1",
+  "game_commit": "d09d48e5",
+  "review_date": "2026-11-16",
+  "source_api": [
+    "ModelDb.AllCards",
+    "CardModel.Id",
+    "CardModel.GetDescriptionForPile(PileType.None, null)"
+  ],
+  "policy": "审核原有剩余分类；保留直接影响共享敌人状态或明确涉及队友的效果；排除仅施加者自身出牌或攻击触发的紧勒、王之凝视。斩杀按用户要求保留。",
+  "cards": [
+    {
+      "entry": "BEACON_OF_HOPE",
+      "model_id": "CARD.BEACON_OF_HOPE",
+      "title_en": "Beacon of Hope",
+      "title_zh": "希望灯塔",
+      "target": "Self",
+      "basic_en": "Whenever you gain [gold]Block[/gold] on your turn, other players gain half that much [gold]Block[/gold].",
+      "upgraded_en": "[gold]Innate[/gold].\nWhenever you gain [gold]Block[/gold] on your turn, other players gain half that much [gold]Block[/gold].",
+      "basic_zh": "每当你在你的回合获得[gold]格挡[/gold]时，其他玩家获得相应一半的[gold]格挡[/gold]。",
+      "upgraded_zh": "[gold]固有[/gold]。\n每当你在你的回合获得[gold]格挡[/gold]时，其他玩家获得相应一半的[gold]格挡[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "BELIEVE_IN_YOU",
+      "model_id": "CARD.BELIEVE_IN_YOU",
+      "title_en": "Believe in You",
+      "title_zh": "相信着你",
+      "target": "AnyAlly",
+      "basic_en": "Another player gains [img]res://images/packed/sprite_fonts/ironclad_energy_icon.png[/img][img]res://images/packed/sprite_fonts/ironclad_energy_icon.png[/img].",
+      "upgraded_en": "Another player gains [img]res://images/packed/sprite_fonts/ironclad_energy_icon.png[/img][img]res://images/packed/sprite_fonts/ironclad_energy_icon.png[/img][img]res://images/packed/sprite_fonts/ironclad_energy_icon.png[/img].",
+      "basic_zh": "另一名玩家获得[img]res://images/packed/sprite_fonts/ironclad_energy_icon.png[/img][img]res://images/packed/sprite_fonts/ironclad_energy_icon.png[/img]。",
+      "upgraded_zh": "另一名玩家获得[img]res://images/packed/sprite_fonts/ironclad_energy_icon.png[/img][img]res://images/packed/sprite_fonts/ironclad_energy_icon.png[/img][img]res://images/packed/sprite_fonts/ironclad_energy_icon.png[/img]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "BLADE_SYMPHONY",
+      "model_id": "CARD.BLADE_SYMPHONY",
+      "title_en": "Blade Symphony",
+      "title_zh": "刀刃交响曲",
+      "target": "AllAllies",
+      "basic_en": "Add 2 [gold]Shivs[/gold] to ALL players' [gold]Hands[/gold].",
+      "upgraded_en": "Add 2 [gold]Shivs[/gold] to ALL players' [gold]Hands[/gold].",
+      "basic_zh": "将2张[gold]小刀[/gold]加入所有玩家的[gold]手牌[/gold]。",
+      "upgraded_zh": "将2张[gold]小刀[/gold]加入所有玩家的[gold]手牌[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "BLAZE",
+      "model_id": "CARD.BLAZE",
+      "title_en": "Blaze",
+      "title_zh": "炽焰",
+      "target": "AnyAlly",
+      "basic_en": "Give another player 5 [gold]Strength[/gold].",
+      "upgraded_en": "Give another player 7 [gold]Strength[/gold].",
+      "basic_zh": "给予另一名玩家5点[gold]力量[/gold]。",
+      "upgraded_zh": "给予另一名玩家7点[gold]力量[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "CACOPHONY",
+      "model_id": "CARD.CACOPHONY",
+      "title_en": "Cacophony",
+      "title_zh": "不谐合曲",
+      "target": "Self",
+      "basic_en": "Every 33 cards drawn by ALL players, deal 66 damage to a random enemy.",
+      "upgraded_en": "Every 33 cards drawn by ALL players, deal 99 damage to a random enemy.",
+      "basic_zh": "所有玩家每抽33张牌，就对随机一名敌人造成66点伤害。",
+      "upgraded_zh": "所有玩家每抽33张牌，就对随机一名敌人造成99点伤害。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "COMPOST",
+      "model_id": "CARD.COMPOST",
+      "title_en": "Compost",
+      "title_zh": "堆肥",
+      "target": "Self",
+      "basic_en": "Whenever an enemy dies, ALL players gain [img]res://images/packed/sprite_fonts/fool_energy_icon.png[/img].",
+      "upgraded_en": "Whenever an enemy dies, ALL players gain [img]res://images/packed/sprite_fonts/fool_energy_icon.png[/img][img]res://images/packed/sprite_fonts/fool_energy_icon.png[/img].",
+      "basic_zh": "当有敌人死亡时，所有玩家获得[img]res://images/packed/sprite_fonts/fool_energy_icon.png[/img]。",
+      "upgraded_zh": "当有敌人死亡时，所有玩家获得[img]res://images/packed/sprite_fonts/fool_energy_icon.png[/img][img]res://images/packed/sprite_fonts/fool_energy_icon.png[/img]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "CONCOCT",
+      "model_id": "CARD.CONCOCT",
+      "title_en": "Concoct",
+      "title_zh": "调制",
+      "target": "AnyAlly",
+      "basic_en": "Choose another player. Whenever their Attacks deal unblocked damage this turn, they apply 3 [gold]Poison[/gold].",
+      "upgraded_en": "Choose another player. Whenever their Attacks deal unblocked damage this turn, they apply 4 [gold]Poison[/gold].",
+      "basic_zh": "选择另一名玩家，他在本回合内造成未被格挡的伤害时，给予3层[gold]中毒[/gold]。",
+      "upgraded_zh": "选择另一名玩家，他在本回合内造成未被格挡的伤害时，给予4层[gold]中毒[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "CONSTELLATION",
+      "model_id": "CARD.CONSTELLATION",
+      "title_en": "Constellation",
+      "title_zh": "群星荟萃",
+      "target": "AnyAlly",
+      "basic_en": "Another player draws 1 card, gains [img]res://images/packed/sprite_fonts/regent_energy_icon.png[/img], and gains 9 [gold]Block[/gold].",
+      "upgraded_en": "Another player draws 1 card, gains [img]res://images/packed/sprite_fonts/regent_energy_icon.png[/img], and gains 12 [gold]Block[/gold].",
+      "basic_zh": "使另一名玩家抽1张牌，获得[img]res://images/packed/sprite_fonts/regent_energy_icon.png[/img]，并获得9 点[gold]格挡[/gold]",
+      "upgraded_zh": "使另一名玩家抽1张牌，获得[img]res://images/packed/sprite_fonts/regent_energy_icon.png[/img]，并获得12 点[gold]格挡[/gold]",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "COORDINATE",
+      "model_id": "CARD.COORDINATE",
+      "title_en": "Coordinate",
+      "title_zh": "协同配合",
+      "target": "AnyAlly",
+      "basic_en": "Give another player 5 [gold]Strength[/gold] this turn.",
+      "upgraded_en": "Give another player 8 [gold]Strength[/gold] this turn.",
+      "basic_zh": "在本回合给予其他玩家5点[gold]力量[/gold]。",
+      "upgraded_zh": "在本回合给予其他玩家8点[gold]力量[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "COVERING_FIRE",
+      "model_id": "CARD.COVERING_FIRE",
+      "title_en": "Covering Fire",
+      "title_zh": "火力掩护",
+      "target": "Self",
+      "basic_en": "Whenever you [gold]Shoot[/gold], allies gain 8 [gold]Block[/gold].",
+      "upgraded_en": "Whenever you [gold]Shoot[/gold], allies gain 11 [gold]Block[/gold].",
+      "basic_zh": "每当你[gold]发射[/gold]时，盟友获得8点[gold]格挡[/gold]。",
+      "upgraded_zh": "每当你[gold]发射[/gold]时，盟友获得11点[gold]格挡[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "CRUSH_UNDER",
+      "model_id": "CARD.CRUSH_UNDER",
+      "title_en": "Crush Under",
+      "title_zh": "下砸",
+      "target": "AllEnemies",
+      "basic_en": "Deal 8 damage to ALL enemies. All enemies lose 1 [gold]Strength[/gold] this turn.",
+      "upgraded_en": "Deal 9 damage to ALL enemies. All enemies lose 2 [gold]Strength[/gold] this turn.",
+      "basic_zh": "对所有敌人造成8点伤害。所有敌人在本回合失去1点[gold]力量[/gold]。",
+      "upgraded_zh": "对所有敌人造成9点伤害。所有敌人在本回合失去2点[gold]力量[/gold]。",
+      "groups": [
+        "weakenattack"
+      ],
+      "reason": "实际降低敌人力量，含临时、永久以及攻击触发的降低。"
+    },
+    {
+      "entry": "DARK_SHACKLES",
+      "model_id": "CARD.DARK_SHACKLES",
+      "title_en": "Dark Shackles",
+      "title_zh": "黑暗镣铐",
+      "target": "AnyEnemy",
+      "basic_en": "Enemy loses 9 [gold]Strength[/gold] this turn.\n[gold]Exhaust[/gold].",
+      "upgraded_en": "Enemy loses 15 [gold]Strength[/gold] this turn.\n[gold]Exhaust[/gold].",
+      "basic_zh": "使一名敌人在本回合失去9点[gold]力量[/gold]。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "使一名敌人在本回合失去15点[gold]力量[/gold]。\n[gold]消耗[/gold]。",
+      "groups": [
+        "weakenattack"
+      ],
+      "reason": "实际降低敌人力量，含临时、永久以及攻击触发的降低。"
+    },
+    {
+      "entry": "DEBILITATE",
+      "model_id": "CARD.DEBILITATE",
+      "title_en": "Debilitate",
+      "title_zh": "摧残",
+      "target": "AnyEnemy",
+      "basic_en": "Deal 10 damage.\n[gold]Vulnerable[/gold] and [gold]Weak[/gold] are twice as effective against the enemy for the next 2 turns.",
+      "upgraded_en": "Deal 12 damage.\n[gold]Vulnerable[/gold] and [gold]Weak[/gold] are twice as effective against the enemy for the next 3 turns.",
+      "basic_zh": "造成10点伤害。\n在接下来的2回合内，该敌人身上的[gold]易伤[/gold]与[gold]虚弱[/gold]效果翻倍。",
+      "upgraded_zh": "造成12点伤害。\n在接下来的3回合内，该敌人身上的[gold]易伤[/gold]与[gold]虚弱[/gold]效果翻倍。",
+      "groups": [
+        "other"
+      ],
+      "reason": "保留特殊连携提醒，按卡牌名称显示；不是虚弱/易伤施加分组。"
+    },
+    {
+      "entry": "DEMONIC_SHIELD",
+      "model_id": "CARD.DEMONIC_SHIELD",
+      "title_en": "Demonic Shield",
+      "title_zh": "恶魔护盾",
+      "target": "AnyAlly",
+      "basic_en": "Lose 1 HP.\nGive another player [gold]Block[/gold] equal to your [gold]Block[/gold].\n[gold]Exhaust[/gold].",
+      "upgraded_en": "Lose 1 HP.\nGive another player [gold]Block[/gold] equal to your [gold]Block[/gold].",
+      "basic_zh": "失去1点生命。\n给予另一位玩家你当前[gold]格挡[/gold]值的[gold]格挡[/gold]。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "失去1点生命。\n给予另一位玩家你当前[gold]格挡[/gold]值的[gold]格挡[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "DYING_STAR",
+      "model_id": "CARD.DYING_STAR",
+      "title_en": "Dying Star",
+      "title_zh": "星灭",
+      "target": "AllEnemies",
+      "basic_en": "[gold]Ethereal[/gold].\nDeal 9 damage to ALL enemies. ALL enemies lose 9 [gold]Strength[/gold] this turn.",
+      "upgraded_en": "[gold]Ethereal[/gold].\nDeal 11 damage to ALL enemies. ALL enemies lose 11 [gold]Strength[/gold] this turn.",
+      "basic_zh": "[gold]虚无[/gold]。\n对所有敌人造成9点伤害。所有敌人在本回合中失去9点[gold]力量[/gold]。",
+      "upgraded_zh": "[gold]虚无[/gold]。\n对所有敌人造成11点伤害。所有敌人在本回合中失去11点[gold]力量[/gold]。",
+      "groups": [
+        "weakenattack"
+      ],
+      "reason": "实际降低敌人力量，含临时、永久以及攻击触发的降低。"
+    },
+    {
+      "entry": "ECHOING_SLASH",
+      "model_id": "CARD.ECHOING_SLASH",
+      "title_en": "Echoing Slash",
+      "title_zh": "回响斩击",
+      "target": "AllEnemies",
+      "basic_en": "Deal 10 damage to ALL enemies.\nRepeat this effect for each enemy killed.",
+      "upgraded_en": "Deal 13 damage to ALL enemies.\nRepeat this effect for each enemy killed.",
+      "basic_zh": "对所有敌人造成10点伤害。\n每有一名敌人被击杀，就重复此效果。",
+      "upgraded_zh": "对所有敌人造成13点伤害。\n每有一名敌人被击杀，就重复此效果。",
+      "groups": [
+        "overlayKill"
+      ],
+      "reason": "卡牌自身击杀敌人后触发额外收益或连锁攻击。"
+    },
+    {
+      "entry": "END_OF_DAYS",
+      "model_id": "CARD.END_OF_DAYS",
+      "title_en": "End of Days",
+      "title_zh": "末日降临",
+      "target": "AllEnemies",
+      "basic_en": "Apply 29 [gold]Doom[/gold] to ALL enemies.\nKill enemies with at least as much [gold]Doom[/gold] as HP.",
+      "upgraded_en": "Apply 37 [gold]Doom[/gold] to ALL enemies.\nKill enemies with at least as much [gold]Doom[/gold] as HP.",
+      "basic_zh": "给予所有敌人29层[gold]灾厄[/gold]。\n杀死所有[gold]灾厄[/gold]大于等于当前生命值的敌人。",
+      "upgraded_zh": "给予所有敌人37层[gold]灾厄[/gold]。\n杀死所有[gold]灾厄[/gold]大于等于当前生命值的敌人。",
+      "groups": [],
+      "reason": "按灾厄阈值直接处决；不是自身击杀后奖励，不列入本组的击杀收益提醒。"
+    },
+    {
+      "entry": "ENERGY_SURGE",
+      "model_id": "CARD.ENERGY_SURGE",
+      "title_en": "Energy Surge",
+      "title_zh": "能量涌动",
+      "target": "AllAllies",
+      "basic_en": "ALL players gain [img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img][img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img].\n[gold]Exhaust[/gold].",
+      "upgraded_en": "ALL players gain [img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img][img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img][img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img].\n[gold]Exhaust[/gold].",
+      "basic_zh": "所有玩家获得[img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img][img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img]。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "所有玩家获得[img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img][img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img][img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img]。\n[gold]消耗[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "ENFEEBLING_TOUCH",
+      "model_id": "CARD.ENFEEBLING_TOUCH",
+      "title_en": "Enfeebling Touch",
+      "title_zh": "弱化之触",
+      "target": "AnyEnemy",
+      "basic_en": "[gold]Ethereal[/gold].\nEnemy loses 8 [gold]Strength[/gold] this turn.",
+      "upgraded_en": "[gold]Ethereal[/gold].\nEnemy loses 11 [gold]Strength[/gold] this turn.",
+      "basic_zh": "[gold]虚无[/gold]。\n让一名敌人在本回合内失去8点[gold]力量[/gold]。",
+      "upgraded_zh": "[gold]虚无[/gold]。\n让一名敌人在本回合内失去11点[gold]力量[/gold]。",
+      "groups": [
+        "weakenattack"
+      ],
+      "reason": "实际降低敌人力量，含临时、永久以及攻击触发的降低。"
+    },
+    {
+      "entry": "ENRAPTURE",
+      "model_id": "CARD.ENRAPTURE",
+      "title_en": "Enrapture",
+      "title_zh": "欣喜若狂",
+      "target": "AnyAlly",
+      "basic_en": "Give another player 6 [gold]Vigor[/gold] and 6 [gold]Stretch[/gold].",
+      "upgraded_en": "Give another player 9 [gold]Vigor[/gold] and 9 [gold]Stretch[/gold].",
+      "basic_zh": "给另一名玩家6点[gold]活力[/gold]和6点[gold]拉伸[/gold]。",
+      "upgraded_zh": "给另一名玩家9点[gold]活力[/gold]和9点[gold]拉伸[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "ENSEMBLE",
+      "model_id": "CARD.ENSEMBLE",
+      "title_en": "Ensemble",
+      "title_zh": "大合唱",
+      "target": "Self",
+      "basic_en": "The next 4 cards played by other players are free to play.\n[gold]Exhaust[/gold].",
+      "upgraded_en": "The next 5 cards played by other players are free to play.\n[gold]Exhaust[/gold].",
+      "basic_zh": "接下来4张其他玩家打出的牌可以免费打出。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "接下来5张其他玩家打出的牌可以免费打出。\n[gold]消耗[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "EXPOSE",
+      "model_id": "CARD.EXPOSE",
+      "title_en": "Expose",
+      "title_zh": "暴露",
+      "target": "AnyEnemy",
+      "basic_en": "Remove all [gold]Artifact[/gold] and [gold]Block[/gold] from the enemy.\nApply 2 [gold]Vulnerable[/gold].\n[gold]Exhaust[/gold].",
+      "upgraded_en": "Remove all [gold]Artifact[/gold] and [gold]Block[/gold] from the enemy.\nApply 3 [gold]Vulnerable[/gold].\n[gold]Exhaust[/gold].",
+      "basic_zh": "去除敌人身上的所有[gold]格挡[/gold]值和[gold]人工制品[/gold]。\n并给予2层[gold]易伤[/gold]。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "去除敌人身上的所有[gold]格挡[/gold]值和[gold]人工制品[/gold]。\n并给予3层[gold]易伤[/gold]。\n[gold]消耗[/gold]。",
+      "groups": [
+        "other"
+      ],
+      "reason": "保留特殊连携提醒，按卡牌名称显示；不是虚弱/易伤施加分组。"
+    },
+    {
+      "entry": "FADE",
+      "model_id": "CARD.FADE",
+      "title_en": "Fade",
+      "title_zh": "消影",
+      "target": "AnyAlly",
+      "basic_en": "[gold]Retain[/gold].\nAnother player gains 6 [gold]Dexterity[/gold] this turn.",
+      "upgraded_en": "[gold]Retain[/gold].\nAnother player gains 9 [gold]Dexterity[/gold] this turn.",
+      "basic_zh": "[gold]保留[/gold]。\n另一名玩家在本回合获得6点[gold]敏捷[/gold]。",
+      "upgraded_zh": "[gold]保留[/gold]。\n另一名玩家在本回合获得9点[gold]敏捷[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "FEED",
+      "model_id": "CARD.FEED",
+      "title_en": "Feed",
+      "title_zh": "狂宴",
+      "target": "AnyEnemy",
+      "basic_en": "Deal 10 damage.\nIf [gold]Fatal[/gold], raise your Max HP by 3.\n[gold]Exhaust[/gold].",
+      "upgraded_en": "Deal 12 damage.\nIf [gold]Fatal[/gold], raise your Max HP by 4.\n[gold]Exhaust[/gold].",
+      "basic_zh": "造成10点伤害。\n[gold]斩杀[/gold]时，永久获得3点最大生命值。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "造成12点伤害。\n[gold]斩杀[/gold]时，永久获得4点最大生命值。\n[gold]消耗[/gold]。",
+      "groups": [
+        "overlayKill"
+      ],
+      "reason": "卡牌自身击杀敌人后触发额外收益或连锁攻击。"
+    },
+    {
+      "entry": "FLANKING",
+      "model_id": "CARD.FLANKING",
+      "title_en": "Flanking",
+      "title_zh": "夹击",
+      "target": "AnyEnemy",
+      "basic_en": "The enemy takes double attack damage from other players this turn.",
+      "upgraded_en": "The enemy takes double attack damage from other players this turn.",
+      "basic_zh": "一名敌人在本回合受到的来自其他玩家的攻击伤害翻倍。",
+      "upgraded_zh": "一名敌人在本回合受到的来自其他玩家的攻击伤害翻倍。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "FRIENDSHIP",
+      "model_id": "CARD.FRIENDSHIP",
+      "title_en": "Friendship",
+      "title_zh": "友谊",
+      "target": "Self",
+      "basic_en": "Lose 2 [gold]Strength[/gold].\nGain [img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img] at the start of each turn.",
+      "upgraded_en": "Lose 1 [gold]Strength[/gold].\nGain [img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img] at the start of each turn.",
+      "basic_zh": "失去2点[gold]力量[/gold]。\n在每个回合开始时获得[img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img]。",
+      "upgraded_zh": "失去1点[gold]力量[/gold]。\n在每个回合开始时获得[img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img]。",
+      "groups": [],
+      "reason": "仅让玩家自身失去力量，不是让敌人失去力量。"
+    },
+    {
+      "entry": "GANG_UP",
+      "model_id": "CARD.GANG_UP",
+      "title_en": "Gang Up",
+      "title_zh": "群起攻之",
+      "target": "AnyEnemy",
+      "basic_en": "Deal 5 damage.\nDeals 5 additional damage for each time another player has attacked the enemy this turn.",
+      "upgraded_en": "Deal 5 damage.\nDeals 7 additional damage for each time another player has attacked the enemy this turn.",
+      "basic_zh": "造成5点伤害。\n本回合其他玩家每攻击过一次该敌人，该牌造成的伤害就额外增加5点。",
+      "upgraded_zh": "造成5点伤害。\n本回合其他玩家每攻击过一次该敌人，该牌造成的伤害就额外增加7点。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "GLIMPSE_BEYOND",
+      "model_id": "CARD.GLIMPSE_BEYOND",
+      "title_en": "Glimpse Beyond",
+      "title_zh": "彼岸一瞥",
+      "target": "AllAllies",
+      "basic_en": "ALL players add 3 [gold]Souls[/gold] into their [gold]Draw Pile[/gold].\n[gold]Exhaust[/gold].",
+      "upgraded_en": "ALL players add 4 [gold]Souls[/gold] into their [gold]Draw Pile[/gold].\n[gold]Exhaust[/gold].",
+      "basic_zh": "在所有玩家的[gold]抽牌堆[/gold]中加入3张[gold]灵魂[/gold]。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "在所有玩家的[gold]抽牌堆[/gold]中加入4张[gold]灵魂[/gold]。\n[gold]消耗[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "HAMMER_TIME",
+      "model_id": "CARD.HAMMER_TIME",
+      "title_en": "Hammer Time",
+      "title_zh": "锤子时间",
+      "target": "Self",
+      "basic_en": "Whenever you [gold]Forge[/gold], all allies [gold]Forge[/gold] as well.",
+      "upgraded_en": "Whenever you [gold]Forge[/gold], all allies [gold]Forge[/gold] as well.",
+      "basic_zh": "每当你[gold]铸造[/gold]时，所有盟友也都[gold]铸造[/gold]相同的数值。",
+      "upgraded_zh": "每当你[gold]铸造[/gold]时，所有盟友也都[gold]铸造[/gold]相同的数值。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "HAND_OF_GREED",
+      "model_id": "CARD.HAND_OF_GREED",
+      "title_en": "Hand of Greed",
+      "title_zh": "贪婪之手",
+      "target": "AnyEnemy",
+      "basic_en": "Deal 20 damage.\nIf [gold]Fatal[/gold], gain 20 [gold]Gold[/gold].",
+      "upgraded_en": "Deal 25 damage.\nIf [gold]Fatal[/gold], gain 25 [gold]Gold[/gold].",
+      "basic_zh": "造成20点伤害。\n[gold]斩杀[/gold]时，获得20[gold]金币[/gold]。",
+      "upgraded_zh": "造成25点伤害。\n[gold]斩杀[/gold]时，获得25[gold]金币[/gold]。",
+      "groups": [
+        "overlayKill"
+      ],
+      "reason": "卡牌自身击杀敌人后触发额外收益或连锁攻击。"
+    },
+    {
+      "entry": "HIBERNATE",
+      "model_id": "CARD.HIBERNATE",
+      "title_en": "Hibernate",
+      "title_zh": "休眠",
+      "target": "Self",
+      "basic_en": "This turn, your [gold]Frost[/gold] grants ALL allies [gold]Block[/gold].\nChannel 2 [gold]Frost[/gold].",
+      "upgraded_en": "This turn, your [gold]Frost[/gold] grants ALL allies [gold]Block[/gold].\nChannel 3 [gold]Frost[/gold].",
+      "basic_zh": "在本回合，你的[gold]冰霜充能球[/gold]会给予所有玩家[gold]格挡[/gold]。\n生成2个[gold]冰霜充能球[/gold]",
+      "upgraded_zh": "在本回合，你的[gold]冰霜充能球[/gold]会给予所有玩家[gold]格挡[/gold]。\n生成3个[gold]冰霜充能球[/gold]",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "HUDDLE_UP",
+      "model_id": "CARD.HUDDLE_UP",
+      "title_en": "Huddle Up",
+      "title_zh": "抱团",
+      "target": "AllAllies",
+      "basic_en": "ALL players draw 2 cards.\n[gold]Exhaust[/gold].",
+      "upgraded_en": "ALL players draw 3 cards.\n[gold]Exhaust[/gold].",
+      "basic_zh": "所有玩家抽2张牌。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "所有玩家抽3张牌。\n[gold]消耗[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "IGNITION",
+      "model_id": "CARD.IGNITION",
+      "title_en": "Ignition",
+      "title_zh": "引火",
+      "target": "AnyAlly",
+      "basic_en": "Another player [gold]Channels[/gold] [gold]Plasma[/gold].\n[gold]Exhaust[/gold].",
+      "upgraded_en": "Another player [gold]Channels[/gold] [gold]Plasma[/gold].",
+      "basic_zh": "使另一名玩家[gold]生成[/gold][gold]等离子[/gold]充能球。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "使另一名玩家[gold]生成[/gold][gold]等离子[/gold]充能球。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "IMITATION_LEARNING",
+      "model_id": "CARD.IMITATION_LEARNING",
+      "title_en": "Imitation Learning",
+      "title_zh": "模仿学习",
+      "target": "AnyAlly",
+      "basic_en": "Choose another player.\nThe next 2 times they play a Power, you play a copy of it.\n[gold]Exhaust[/gold].",
+      "upgraded_en": "Choose another player.\nThe next 3 times they play a Power, you play a copy of it.\n[gold]Exhaust[/gold].",
+      "basic_zh": "选择另一名玩家。\n该玩家下2次打出能力牌时，你打出一张该牌的复制品。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "选择另一名玩家。\n该玩家下3次打出能力牌时，你打出一张该牌的复制品。\n[gold]消耗[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "INTERCEPT",
+      "model_id": "CARD.INTERCEPT",
+      "title_en": "Intercept",
+      "title_zh": "拦截",
+      "target": "AnyAlly",
+      "basic_en": "Gain 9 [gold]Block[/gold].\nRedirect all incoming attacks that would be dealt to another player this turn to you.",
+      "upgraded_en": "Gain 13 [gold]Block[/gold].\nRedirect all incoming attacks that would be dealt to another player this turn to you.",
+      "basic_zh": "获得9点[gold]格挡[/gold]。\n将本回合所有要对另一名玩家发起的攻击转移到你的身上。",
+      "upgraded_zh": "获得13点[gold]格挡[/gold]。\n将本回合所有要对另一名玩家发起的攻击转移到你的身上。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "KNOCKDOWN",
+      "model_id": "CARD.KNOCKDOWN",
+      "title_en": "Knockdown",
+      "title_zh": "击倒",
+      "target": "AnyEnemy",
+      "basic_en": "Deal 10 damage.\nThe enemy takes double damage from other players this turn.",
+      "upgraded_en": "Deal 14 damage.\nThe enemy takes triple damage from other players this turn.",
+      "basic_zh": "造成10点伤害。\n该敌人在本回合受到的来自其他玩家的伤害变为两倍。",
+      "upgraded_zh": "造成14点伤害。\n该敌人在本回合受到的来自其他玩家的伤害变为三倍。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "KNOCKOUT_BLOW",
+      "model_id": "CARD.KNOCKOUT_BLOW",
+      "title_en": "Knockout Blow",
+      "title_zh": "决胜一击",
+      "target": "AnyEnemy",
+      "basic_en": "Deal 30 damage.\nIf this kills an enemy, gain\n5[img]res://images/packed/sprite_fonts/star_icon.png[/img].",
+      "upgraded_en": "Deal 38 damage.\nIf this kills an enemy, gain\n5[img]res://images/packed/sprite_fonts/star_icon.png[/img].",
+      "basic_zh": "造成30点伤害。\n如果此牌击杀了敌人，获得5[img]res://images/packed/sprite_fonts/star_icon.png[/img]。",
+      "upgraded_zh": "造成38点伤害。\n如果此牌击杀了敌人，获得5[img]res://images/packed/sprite_fonts/star_icon.png[/img]。",
+      "groups": [
+        "overlayKill"
+      ],
+      "reason": "卡牌自身击杀敌人后触发额外收益或连锁攻击。"
+    },
+    {
+      "entry": "LARGESSE",
+      "model_id": "CARD.LARGESSE",
+      "title_en": "Largesse",
+      "title_zh": "慷慨捐助",
+      "target": "AnyAlly",
+      "basic_en": "Another player adds 1 random Colorless card to their [gold]Hand[/gold].",
+      "upgraded_en": "Another player adds 1 random [gold]Upgraded[/gold] Colorless card to their [gold]Hand[/gold].",
+      "basic_zh": "将一张随机的无色牌添加到一位其他玩家的[gold]手牌[/gold]中。",
+      "upgraded_zh": "将一张随机的[gold]升级过的[/gold]无色牌添加到一位其他玩家的[gold]手牌[/gold]中。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "LEGION_OF_BONE",
+      "model_id": "CARD.LEGION_OF_BONE",
+      "title_en": "Legion of Bone",
+      "title_zh": "骸骨军团",
+      "target": "AllAllies",
+      "basic_en": "ALL players [gold]Summon[/gold] 6.",
+      "upgraded_en": "ALL players [gold]Summon[/gold] 8.",
+      "basic_zh": "所有玩家[gold]召唤[/gold]6。",
+      "upgraded_zh": "所有玩家[gold]召唤[/gold]8。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "LIFT",
+      "model_id": "CARD.LIFT",
+      "title_en": "Lift",
+      "title_zh": "托举",
+      "target": "AnyAlly",
+      "basic_en": "Give another player 11 [gold]Block[/gold].",
+      "upgraded_en": "Give another player 16 [gold]Block[/gold].",
+      "basic_zh": "给另一名玩家11点[gold]格挡[/gold]。",
+      "upgraded_zh": "给另一名玩家16点[gold]格挡[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "MAD_SCIENCE",
+      "model_id": "CARD.MAD_SCIENCE",
+      "title_en": "Mad Science",
+      "title_zh": "疯狂科学",
+      "target": "Self",
+      "basic_en": "??????",
+      "upgraded_en": "[gold]Innate[/gold].\n??????",
+      "basic_zh": "？？？？？？",
+      "upgraded_zh": "[gold]固有[/gold]。\n？？？？？？",
+      "groups": [],
+      "reason": "由实例 TinkerTimeType/TinkerTimeRider 决定效果；不能将同 ID 的所有变体视为相同效果，本次仍不加入静态名单。"
+    },
+    {
+      "entry": "MALAISE",
+      "model_id": "CARD.MALAISE",
+      "title_en": "Malaise",
+      "title_zh": "萎靡",
+      "target": "AnyEnemy",
+      "basic_en": "Enemy loses X [gold]Strength[/gold]. Apply X [gold]Weak[/gold].\n[gold]Exhaust[/gold].",
+      "upgraded_en": "Enemy loses X+1 [gold]Strength[/gold]. Apply X+1 [gold]Weak[/gold].\n[gold]Exhaust[/gold].",
+      "basic_zh": "敌人失去X点[gold]力量[/gold]。给予X层[gold]虚弱[/gold]。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "敌人失去X+1点[gold]力量[/gold]。给予X+1层[gold]虚弱[/gold]。\n[gold]消耗[/gold]。",
+      "groups": [
+        "weakenattack"
+      ],
+      "reason": "实际降低敌人力量，含临时、永久以及攻击触发的降低。"
+    },
+    {
+      "entry": "MANGLE",
+      "model_id": "CARD.MANGLE",
+      "title_en": "Mangle",
+      "title_zh": "凌虐",
+      "target": "AnyEnemy",
+      "basic_en": "Deal 20 damage.\nEnemy loses 10 [gold]Strength[/gold] this turn.",
+      "upgraded_en": "Deal 26 damage.\nEnemy loses 15 [gold]Strength[/gold] this turn.",
+      "basic_zh": "造成20点伤害。\n敌人在本回合失去10点[gold]力量[/gold]。",
+      "upgraded_zh": "造成26点伤害。\n敌人在本回合失去15点[gold]力量[/gold]。",
+      "groups": [
+        "weakenattack"
+      ],
+      "reason": "实际降低敌人力量，含临时、永久以及攻击触发的降低。"
+    },
+    {
+      "entry": "MIMIC",
+      "model_id": "CARD.MIMIC",
+      "title_en": "Mimic",
+      "title_zh": "拟态",
+      "target": "AnyAlly",
+      "basic_en": "Gain [gold]Block[/gold] equal to the [gold]Block[/gold] on another player.\n[gold]Exhaust[/gold].",
+      "upgraded_en": "Gain [gold]Block[/gold] equal to the [gold]Block[/gold] on another player.",
+      "basic_zh": "获得等同于另一位玩家[gold]格挡[/gold]值的[gold]格挡[/gold]。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "获得等同于另一位玩家[gold]格挡[/gold]值的[gold]格挡[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "MONARCHS_GAZE",
+      "model_id": "CARD.MONARCHS_GAZE",
+      "title_en": "Monarch's Gaze",
+      "title_zh": "王之凝视",
+      "target": "Self",
+      "basic_en": "Whenever you attack an enemy, it loses 1 [gold]Strength[/gold] this turn.",
+      "upgraded_en": "Whenever you attack an enemy, it loses 1 [gold]Strength[/gold] this turn.",
+      "basic_zh": "每当你攻击敌人的时候，这名敌人在本回合失去1点[gold]力量[/gold]。",
+      "upgraded_zh": "每当你攻击敌人的时候，这名敌人在本回合失去1点[gold]力量[/gold]。",
+      "groups": [],
+      "reason": "能力施加在自己身上，MonarchsGazePower.AfterDamageGiven 只响应 dealer == Owner 的攻击，再降低敌人力量；队友攻击不能触发，不作为直接共享弱化来源提示。"
+    },
+    {
+      "entry": "ONE_FOR_ALL",
+      "model_id": "CARD.ONE_FOR_ALL",
+      "title_en": "One for All",
+      "title_zh": "一心化万",
+      "target": "AllAllies",
+      "basic_en": "EVERYONE'S 0 [img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img] Attacks deal 3 additional damage.",
+      "upgraded_en": "EVERYONE'S 0 [img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img] Attacks deal 4 additional damage.",
+      "basic_zh": "所有人的0[img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img]费攻击牌额外造成3点伤害。",
+      "upgraded_zh": "所有人的0[img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img]费攻击牌额外造成4点伤害。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "PIERCING_WAIL",
+      "model_id": "CARD.PIERCING_WAIL",
+      "title_en": "Piercing Wail",
+      "title_zh": "尖啸",
+      "target": "AllEnemies",
+      "basic_en": "ALL enemies lose 6 [gold]Strength[/gold] this turn.\n[gold]Exhaust[/gold].",
+      "upgraded_en": "ALL enemies lose 8 [gold]Strength[/gold] this turn.\n[gold]Exhaust[/gold].",
+      "basic_zh": "所有敌人在本回合失去6点[gold]力量[/gold]。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "所有敌人在本回合失去8点[gold]力量[/gold]。\n[gold]消耗[/gold]。",
+      "groups": [
+        "weakenattack"
+      ],
+      "reason": "实际降低敌人力量，含临时、永久以及攻击触发的降低。"
+    },
+    {
+      "entry": "PLOT",
+      "model_id": "CARD.PLOT",
+      "title_en": "Plot",
+      "title_zh": "筹划",
+      "target": "AllAllies",
+      "basic_en": "Next turn, ALL players draw 2 cards.",
+      "upgraded_en": "Next turn, ALL players draw 3 cards.",
+      "basic_zh": "下一回合，所有玩家抽2张牌。",
+      "upgraded_zh": "下一回合，所有玩家抽3张牌。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "RALLY",
+      "model_id": "CARD.RALLY",
+      "title_en": "Rally",
+      "title_zh": "集结",
+      "target": "AllAllies",
+      "basic_en": "ALL players gain 12 [gold]Block[/gold].",
+      "upgraded_en": "ALL players gain 17 [gold]Block[/gold].",
+      "basic_zh": "所有玩家获得12点[gold]格挡[/gold]。",
+      "upgraded_zh": "所有玩家获得17点[gold]格挡[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "RESONANCE",
+      "model_id": "CARD.RESONANCE",
+      "title_en": "Resonance",
+      "title_zh": "共鸣",
+      "target": "AllEnemies",
+      "basic_en": "Gain 1 [gold]Strength[/gold]. ALL enemies lose 1 [gold]Strength[/gold].",
+      "upgraded_en": "Gain 2 [gold]Strength[/gold]. ALL enemies lose 1 [gold]Strength[/gold].",
+      "basic_zh": "获得1点[gold]力量[/gold]。所有敌人失去1点[gold]力量[/gold]。",
+      "upgraded_zh": "获得2点[gold]力量[/gold]。所有敌人失去1点[gold]力量[/gold]。",
+      "groups": [
+        "weakenattack"
+      ],
+      "reason": "实际降低敌人力量，含临时、永久以及攻击触发的降低。"
+    },
+    {
+      "entry": "SELF_DEPRECATE",
+      "model_id": "CARD.SELF_DEPRECATE",
+      "title_en": "Self Deprecate",
+      "title_zh": "自贬",
+      "target": "AllAllies",
+      "basic_en": "Add a [gold]Sadness[/gold] to your [gold]Hand[/gold].\nAdd 2 [gold]Joy[/gold] to all allies' [gold]Hands[/gold].",
+      "upgraded_en": "Add a [gold]Sadness[/gold] to your [gold]Hand[/gold].\nAdd 3 [gold]Joy[/gold] to all allies' [gold]Hands[/gold].",
+      "basic_zh": "在你的[gold]手牌[/gold]中加入一张[gold]悲伤[/gold]。\n在所有盟友的[gold]手牌[/gold]中加入2张[gold]喜悦[/gold]。",
+      "upgraded_zh": "在你的[gold]手牌[/gold]中加入一张[gold]悲伤[/gold]。\n在所有盟友的[gold]手牌[/gold]中加入3张[gold]喜悦[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "SHARED_FATE",
+      "model_id": "CARD.SHARED_FATE",
+      "title_en": "Shared Fate",
+      "title_zh": "命运同担",
+      "target": "AnyEnemy",
+      "basic_en": "Lose 2 [gold]Strength[/gold].\nEnemy loses 2 [gold]Strength[/gold].\n[gold]Exhaust[/gold].",
+      "upgraded_en": "Lose 2 [gold]Strength[/gold].\nEnemy loses 3 [gold]Strength[/gold].\n[gold]Exhaust[/gold].",
+      "basic_zh": "失去2点[gold]力量[/gold]。\n敌人失去2点[gold]力量[/gold]。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "失去2点[gold]力量[/gold]。\n敌人失去3点[gold]力量[/gold]。\n[gold]消耗[/gold]。",
+      "groups": [
+        "weakenattack"
+      ],
+      "reason": "实际降低敌人力量，含临时、永久以及攻击触发的降低。"
+    },
+    {
+      "entry": "SHOW_OFF",
+      "model_id": "CARD.SHOW_OFF",
+      "title_en": "Show Off",
+      "title_zh": "炫技",
+      "target": "Self",
+      "basic_en": "Gain 5 [gold]Aim[/gold].\nIf a non-minion enemy dies this turn, permanently increase this card's [gold]Aim[/gold] by 2.\n[gold]Exhaust[/gold].",
+      "upgraded_en": "Gain 5 [gold]Aim[/gold].\nIf a non-minion enemy dies this turn, permanently increase this card's [gold]Aim[/gold] by 3.\n[gold]Exhaust[/gold].",
+      "basic_zh": "获得5点[gold]瞄准[/gold]。\n如果本回合有非爪牙敌人死亡，则这张牌的[gold]瞄准[/gold]永久增加2点。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "获得5点[gold]瞄准[/gold]。\n如果本回合有非爪牙敌人死亡，则这张牌的[gold]瞄准[/gold]永久增加3点。\n[gold]消耗[/gold]。",
+      "groups": [],
+      "reason": "检查本回合是否有非爪牙敌人死亡，不要求由此牌击杀，不是自身击杀后奖励。"
+    },
+    {
+      "entry": "SNEAKY",
+      "model_id": "CARD.SNEAKY",
+      "title_en": "Sneaky",
+      "title_zh": "鬼祟",
+      "target": "Self",
+      "basic_en": "[gold]Sly[/gold].\nWhenever another player attacks an enemy, gain 1 [gold]Block[/gold].",
+      "upgraded_en": "[gold]Sly[/gold].\nWhenever another player attacks an enemy, gain 2 [gold]Block[/gold].",
+      "basic_zh": "[gold]奇巧[/gold]。\n每当其他玩家攻击一名敌人时，获得1点[gold]格挡[/gold]。",
+      "upgraded_zh": "[gold]奇巧[/gold]。\n每当其他玩家攻击一名敌人时，获得2点[gold]格挡[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "SOULBOUND",
+      "model_id": "CARD.SOULBOUND",
+      "title_en": "Soulbound",
+      "title_zh": "灵魂绑定",
+      "target": "AnyAlly",
+      "basic_en": "Choose an ally.\nWhenever you create a [gold]Soul[/gold], add a [gold]Soul[/gold] to their [gold]Draw Pile[/gold].",
+      "upgraded_en": "[gold]Innate[/gold].\nChoose an ally.\nWhenever you create a [gold]Soul[/gold], add a [gold]Soul[/gold] to their [gold]Draw Pile[/gold].",
+      "basic_zh": "选择一名盟友。\n每当你生成一张[gold]灵魂[/gold]时，将一张[gold]灵魂[/gold]，添加到其[gold]抽牌堆[/gold]。",
+      "upgraded_zh": "[gold]固有[/gold]。\n选择一名盟友。\n每当你生成一张[gold]灵魂[/gold]时，将一张[gold]灵魂[/gold]，添加到其[gold]抽牌堆[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "STRANGLE",
+      "model_id": "CARD.STRANGLE",
+      "title_en": "Strangle",
+      "title_zh": "紧勒",
+      "target": "AnyEnemy",
+      "basic_en": "Deal 8 damage.\nWhenever you play a card this turn, the enemy loses 2 HP.",
+      "upgraded_en": "Deal 10 damage.\nWhenever you play a card this turn, the enemy loses 3 HP.",
+      "basic_zh": "造成8点伤害。\n你在这个回合内每出一张牌，该名敌人都会失去2点生命。",
+      "upgraded_zh": "造成10点伤害。\n你在这个回合内每出一张牌，该名敌人都会失去3点生命。",
+      "groups": [],
+      "reason": "StranglePower.BeforeCardPlayed 要求 card.Owner == Applier.Player；队友出牌不触发生命流失，排除以免误认为共享连携效果。"
+    },
+    {
+      "entry": "SUNDER",
+      "model_id": "CARD.SUNDER",
+      "title_en": "Sunder",
+      "title_zh": "分离",
+      "target": "AnyEnemy",
+      "basic_en": "Deal 26 damage.\nIf this kills an enemy, gain [img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img][img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img][img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img].",
+      "upgraded_en": "Deal 34 damage.\nIf this kills an enemy, gain [img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img][img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img][img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img].",
+      "basic_zh": "造成26点伤害。\n如果这张牌击杀了敌人，则获得[img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img][img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img][img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img]。",
+      "upgraded_zh": "造成34点伤害。\n如果这张牌击杀了敌人，则获得[img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img][img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img][img]res://images/packed/sprite_fonts/defect_energy_icon.png[/img]。",
+      "groups": [
+        "overlayKill"
+      ],
+      "reason": "卡牌自身击杀敌人后触发额外收益或连锁攻击。"
+    },
+    {
+      "entry": "TAG_TEAM",
+      "model_id": "CARD.TAG_TEAM",
+      "title_en": "Tag Team",
+      "title_zh": "双打组合",
+      "target": "AnyEnemy",
+      "basic_en": "Deal 11 damage.\nThe next Attack another player plays on the enemy is played an extra time.",
+      "upgraded_en": "Deal 15 damage.\nThe next Attack another player plays on the enemy is played an extra time.",
+      "basic_zh": "造成11点伤害。\n其他玩家的下一张攻击牌将在该名敌人身上额外生效一次。",
+      "upgraded_zh": "造成15点伤害。\n其他玩家的下一张攻击牌将在该名敌人身上额外生效一次。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "TANK",
+      "model_id": "CARD.TANK",
+      "title_en": "Tank",
+      "title_zh": "肉盾",
+      "target": "Self",
+      "basic_en": "Take 50% more damage from enemies.\nAllies take 50% less damage from enemies.",
+      "upgraded_en": "Take 50% more damage from enemies.\nAllies take 50% less damage from enemies.",
+      "basic_zh": "受到敌人的伤害增加50%。\n盟友受到敌人的伤害减少50%。",
+      "upgraded_zh": "受到敌人的伤害增加50%。\n盟友受到敌人的伤害减少50%。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "THE_BALL",
+      "model_id": "CARD.THE_BALL",
+      "title_en": "The Ball",
+      "title_zh": "魔球",
+      "target": "AnyEnemy",
+      "basic_en": "Deal 10 damage.\nIncrease this card's damage by 10 this combat and give it to a random ally.",
+      "upgraded_en": "Deal 10 damage.\nIncrease this card's damage by 15 this combat and give it to a random ally.",
+      "basic_zh": "造成10点伤害。\n将这张牌在本场战斗中的伤害增加10，然后将其交给一名随机盟友。",
+      "upgraded_zh": "造成10点伤害。\n将这张牌在本场战斗中的伤害增加15，然后将其交给一名随机盟友。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "THE_HUNT",
+      "model_id": "CARD.THE_HUNT",
+      "title_en": "The Hunt",
+      "title_zh": "狩猎",
+      "target": "AnyEnemy",
+      "basic_en": "Deal 10 damage.\nIf [gold]Fatal[/gold], gain an additional card reward.\n[gold]Exhaust[/gold].",
+      "upgraded_en": "Deal 15 damage.\nIf [gold]Fatal[/gold], gain an additional card reward.\n[gold]Exhaust[/gold].",
+      "basic_zh": "造成10点伤害。\n[gold]斩杀[/gold]时，额外获得一次卡牌奖励。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "造成15点伤害。\n[gold]斩杀[/gold]时，额外获得一次卡牌奖励。\n[gold]消耗[/gold]。",
+      "groups": [
+        "overlayKill"
+      ],
+      "reason": "卡牌自身击杀敌人后触发额外收益或连锁攻击。"
+    },
+    {
+      "entry": "TIMBER",
+      "model_id": "CARD.TIMBER",
+      "title_en": "Timber",
+      "title_zh": "大树将倾",
+      "target": "AnyEnemy",
+      "basic_en": "Deal 20 damage.\nIf this kills an enemy, deal 30 damage to ALL enemies.",
+      "upgraded_en": "Deal 25 damage.\nIf this kills an enemy, deal 35 damage to ALL enemies.",
+      "basic_zh": "造成20点伤害。\n如果这张牌杀死一个敌人，则对所有敌人造成30点伤害。",
+      "upgraded_zh": "造成25点伤害。\n如果这张牌杀死一个敌人，则对所有敌人造成35点伤害。",
+      "groups": [
+        "overlayKill"
+      ],
+      "reason": "卡牌自身击杀敌人后触发额外收益或连锁攻击。"
+    },
+    {
+      "entry": "TUTOR",
+      "model_id": "CARD.TUTOR",
+      "title_en": "Tutor",
+      "title_zh": "指导",
+      "target": "AnyAlly",
+      "basic_en": "Another player chooses a card in their [gold]Draw Pile[/gold] to add into their [gold]Hand[/gold].",
+      "upgraded_en": "Another player chooses a card in their [gold]Draw Pile[/gold] to add into their [gold]Hand[/gold].",
+      "basic_zh": "另一名玩家选择其[gold]抽牌堆[/gold]中的一张牌放入其[gold]手牌[/gold]。",
+      "upgraded_zh": "另一名玩家选择其[gold]抽牌堆[/gold]中的一张牌放入其[gold]手牌[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "UNDERWORLD",
+      "model_id": "CARD.UNDERWORLD",
+      "title_en": "Underworld",
+      "title_zh": "幽冥之界",
+      "target": "Self",
+      "basic_en": "Whenever other players deal attack damage this turn, apply that much [gold]Doom[/gold].\n[gold]Exhaust[/gold].",
+      "upgraded_en": "Whenever other players deal attack damage this turn, apply that much [gold]Doom[/gold].",
+      "basic_zh": "每当其他玩家在本回合造成攻击伤害时，给予敌人相等的[gold]灾厄[/gold]。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "每当其他玩家在本回合造成攻击伤害时，给予敌人相等的[gold]灾厄[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    },
+    {
+      "entry": "WHISTLE",
+      "model_id": "CARD.WHISTLE",
+      "title_en": "Whistle",
+      "title_zh": "吹哨",
+      "target": "AnyEnemy",
+      "basic_en": "Deal 33 damage.\n[gold]Stun[/gold] the enemy.\n[gold]Exhaust[/gold].",
+      "upgraded_en": "Deal 44 damage.\n[gold]Stun[/gold] the enemy.\n[gold]Exhaust[/gold].",
+      "basic_zh": "造成33点伤害。\n[gold]击晕[/gold]该敌人。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "造成44点伤害。\n[gold]击晕[/gold]该敌人。\n[gold]消耗[/gold]。",
+      "groups": [
+        "other"
+      ],
+      "reason": "保留特殊连携提醒，按卡牌名称显示；不是虚弱/易伤施加分组。"
+    },
+    {
+      "entry": "YOGA",
+      "model_id": "CARD.YOGA",
+      "title_en": "Yoga",
+      "title_zh": "瑜伽",
+      "target": "AllAllies",
+      "basic_en": "ALL players gain 6 [gold]Stretch[/gold].",
+      "upgraded_en": "ALL players gain 8 [gold]Stretch[/gold].",
+      "basic_zh": "所有玩家获得6点[gold]拉伸[/gold]。",
+      "upgraded_zh": "所有玩家获得8点[gold]拉伸[/gold]。",
+      "groups": [
+        "multiplayer"
+      ],
+      "reason": "明确涉及盟友、其他玩家或全体玩家的协同、支援、传牌或反应效果，合并至多人组。"
+    }
+  ]
+}

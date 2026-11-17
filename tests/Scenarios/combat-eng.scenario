@@ -1,0 +1,431 @@
+# Real combat hooks, live overlay, and recorded speech bubble creation.
+fight SLIMES_WEAK 12345
+wait combat-started
+wait 0.5
+combohint_test visible
+combohint_test effect-catalog
+combohint_test remaining-features
+combohint_test duration 4.5
+combohint_test clear
+wait 0.4
+# All-disabled effects cannot create empty bubbles; toggles cancel pending work.
+combohint_test effect weak false
+combohint_test effect vulnerable false
+combohint_test mark
+card SHOCKWAVE
+wait 0.6
+combohint_test contains No combo effects available
+combohint_test bubbles 0
+combohint_test effect vulnerable true
+wait 0.3
+combohint_test contains Vulnerable
+combohint_test absent Weak
+combohint_test clear
+combohint_test mark
+card SHOCKWAVE
+combohint_test effect vulnerable false
+wait 0.6
+combohint_test bubbles 0
+combohint_test effect weak true
+combohint_test effect vulnerable true
+combohint_test clear
+wait 0.4
+# Multiplayer cards are one independently controlled hint category.
+combohint_test effect multiplayer false
+combohint_test mark
+card LIFT
+card HUDDLE_UP
+wait 0.6
+combohint_test contains No combo effects available
+combohint_test bubbles 0
+combohint_test effect multiplayer true
+wait 0.3
+combohint_test contains Lift
+combohint_test contains Huddle Up
+combohint_test clear
+wait 0.4
+combohint_test mark
+card LIFT
+combohint_test effect multiplayer false
+wait 0.6
+combohint_test contains No combo effects available
+combohint_test bubbles 0
+combohint_test effect multiplayer true
+combohint_test clear
+wait 0.4
+combohint_test mark
+card LIFT
+wait 0.6
+combohint_test contains Lift
+combohint_test bubble-contains Lift
+combohint_test bubbles 1
+combohint_test effect multiplayer false
+wait 0.3
+combohint_test contains No combo effects available
+card BASH
+wait 0.6
+combohint_test contains Vulnerable
+combohint_test absent Lift
+combohint_test effect multiplayer true
+combohint_test clear
+wait 0.4
+# Character effects default off: standalone sources must not create empty bubbles.
+combohint_test mark
+card DEADLY_POISON
+card SCOURGE
+wait 0.6
+combohint_test contains No combo effects available
+combohint_test bubbles 0
+combohint_test effect poison true
+wait 0.3
+combohint_test contains Poison
+combohint_test absent Doom
+combohint_test effect doom true
+wait 0.3
+combohint_test contains Poison
+combohint_test contains Doom
+combohint_test clear
+wait 0.4
+combohint_test mark
+combohint_test hover-next
+card DEADLY_POISON
+card POISONED_STAB
+card SCOURGE
+card NEGATIVE_PULSE
+card DISLIKE_YOU
+wait 0.8
+combohint_test bubbles 1
+combohint_test contains Poison
+combohint_test contains Doom
+combohint_test contains Dislike You
+combohint_test bubble-contains Poison
+combohint_test bubble-contains Doom
+combohint_test bubble-contains Dislike You
+screenshot combohint-character-effects-eng
+combohint_test hover-effect overlay p0.POISON_POWER
+combohint_test unhover-effect
+wait 0.1
+combohint_test tip-gone
+combohint_test hover-effect bubble DOOM_POWER
+combohint_test unhover-effect
+wait 0.1
+combohint_test tip-gone
+combohint_test hover-effect overlay p0.DISLIKE_YOU_POWER
+wait 0.2
+screenshot combohint-overlay-dislike-eng
+combohint_test unhover-effect
+wait 0.1
+combohint_test tip-gone
+combohint_test hover-effect bubble DISLIKE_YOU_POWER
+wait 0.2
+screenshot combohint-bubble-dislike-eng
+combohint_test unhover-effect
+wait 0.1
+combohint_test tip-gone
+combohint_test effect poison false
+combohint_test effect doom false
+wait 0.3
+combohint_test absent Poison
+combohint_test absent Doom
+combohint_test contains Dislike You
+combohint_test clear
+wait 0.4
+# Recognize Sapping while excluding other variants with the same Model ID.
+combohint_test mark
+combohint_test mad-science None
+wait 0.6
+combohint_test bubbles 0
+combohint_test mad-science Sapping
+wait 0.6
+combohint_test bubbles 1
+combohint_test contains Weak
+combohint_test contains Vulnerable
+combohint_test bubble-contains Weak
+combohint_test bubble-contains Vulnerable
+combohint_test mark
+combohint_test mad-science Choking
+wait 0.6
+combohint_test bubbles 0
+combohint_test hover-effect overlay p0.WEAK_POWER
+combohint_test unhover-effect
+wait 0.1
+combohint_test tip-gone
+screenshot combohint-dynamic-eng
+combohint_test mark
+combohint_test mad-science Choking
+wait 0.6
+combohint_test bubbles 0
+combohint_test clear
+wait 0.5
+combohint_test duration 3
+combohint_test contains No combo effects available
+# These cards mention existing effects or apply Weak to the player, not enemies.
+combohint_test mark
+card BULLY
+card DOUBT
+card MOLTEN_FIST
+card VICIOUS
+card STRANGLE
+card MONARCHS_GAZE
+wait 0.6
+combohint_test absent Weak
+combohint_test absent Vulnerable
+combohint_test absent Enfeeblement
+combohint_test contains No combo effects available
+combohint_test bubbles 0
+card DEBILITATE
+wait 0.6
+combohint_test absent Weak
+combohint_test absent Vulnerable
+combohint_test clear
+wait 0.4
+# Overlay and bubbles display the same native effect names.
+combohint_test mark
+card DOMINATE
+wait 0.6
+combohint_test absent Dominate
+combohint_test absent Weak
+combohint_test contains Vulnerable
+combohint_test bubbles 1
+combohint_test bubble-contains Vulnerable
+combohint_test clear
+wait 0.4
+combohint_test mark
+card HAZE
+wait 0.6
+combohint_test absent Haze
+combohint_test absent Poison
+combohint_test contains Weak
+combohint_test absent Vulnerable
+combohint_test bubbles 1
+combohint_test bubble-contains Weak
+combohint_test clear
+wait 0.4
+combohint_test mark
+card THE_EMPRESS
+wait 0.6
+combohint_test absent The Empress
+combohint_test contains Weak
+combohint_test contains Vulnerable
+combohint_test bubbles 1
+combohint_test bubble-contains Weak
+combohint_test bubble-contains Vulnerable
+combohint_test clear
+wait 0.4
+combohint_test mark
+card SHOCKWAVE
+card SHOCKWAVE
+wait 0.6
+combohint_test visible
+combohint_test absent Shockwave
+combohint_test contains Vulnerable
+combohint_test bubbles 1
+combohint_test bubble-contains Weak
+combohint_test bubble-contains Vulnerable
+combohint_test contains Weak
+screenshot combohint-effects-eng
+# An identical effect already in hand must not announce itself again.
+combohint_test mark
+card SHOCKWAVE
+wait 0.6
+combohint_test bubbles 0
+combohint_test clear
+wait 0.4
+combohint_test contains No combo effects available
+combohint_test absent Vulnerable
+# Removing the new effect before the debounce expires cancels its bubble.
+combohint_test mark
+card SHOCKWAVE
+remove_card SHOCKWAVE
+wait 0.6
+combohint_test bubbles 0
+combohint_test contains No combo effects available
+# Lethal is inline in both surfaces, with no hover behavior.
+combohint_test mark
+combohint_test hover-next
+card FEED
+wait 0.6
+combohint_test contains Lethal
+combohint_test absent Feed
+combohint_test bubbles 1
+combohint_test bubble-contains Lethal
+combohint_test no-hover overlay
+combohint_test no-hover bubble
+screenshot combohint-lethal-eng
+# Additional lethal sources must not repeat the same availability announcement.
+combohint_test mark
+card FEED
+card ECHOING_SLASH
+wait 0.6
+combohint_test bubbles 0
+# Strength reduction is an inline effect; multiplayer entries preview cards.
+combohint_test clear
+wait 0.4
+combohint_test mark
+card MALAISE
+card LIFT
+card HUDDLE_UP
+wait 0.6
+combohint_test absent Strength loss
+combohint_test absent Malaise
+combohint_test contains Enfeeblement
+combohint_test contains Weak
+combohint_test contains Lift
+combohint_test contains Huddle Up
+combohint_test bubbles 1
+combohint_test bubble-contains Enfeeblement
+combohint_test bubble-contains Weak
+combohint_test bubble-contains Lift
+combohint_test bubble-contains Huddle Up
+combohint_test mark
+card ECHOING_SLASH
+wait 0.6
+combohint_test contains Lethal
+combohint_test absent Echoing Slash
+combohint_test bubbles 1
+combohint_test bubble-contains Lethal
+screenshot combohint-groups-eng
+draw 2
+wait 0.5
+combohint_test visible
+# Exercise the same settings-change notification used by the config page.
+combohint_test settings false true true
+wait 0.2
+combohint_test hidden
+combohint_test clear
+combohint_test mark
+card SHOCKWAVE
+wait 0.6
+combohint_test bubbles 1
+combohint_test hidden
+# Bubbles can be disabled independently of the overlay.
+combohint_test settings true false true
+combohint_test clear
+combohint_test mark
+card SHOCKWAVE
+wait 0.6
+combohint_test bubbles 0
+combohint_test visible
+combohint_test settings true true false
+combohint_test clear
+combohint_test mark
+card SHOCKWAVE
+wait 0.6
+combohint_test hidden
+combohint_test bubbles 0
+combohint_test settings true true true
+wait 0.3
+combohint_test visible
+combohint_test contains Weak
+combohint_test clear
+endturn
+wait turn-started
+wait 0.5
+combohint_test visible
+combohint_test remember
+win
+wait 1
+fight SLIMES_WEAK 67890
+wait combat-started
+wait 0.5
+combohint_test fresh
+combohint_test visible
+combohint_test clear
+wait 0.4
+combohint_test contains No combo effects available
+screenshot combohint-second-combat-eng
+# Both surfaces: native card/effect tooltip types and cleanup through real mouse events.
+combohint_test hover-next
+card FLANKING
+wait 0.8
+combohint_test contains Flanking
+combohint_test bubble-contains Flanking
+combohint_test hover-effect overlay p0.CARD.FLANKING card
+wait 0.2
+screenshot combohint-overlay-card-eng
+combohint_test unhover-effect
+wait 0.1
+combohint_test tip-gone
+combohint_test hover-effect bubble CARD.FLANKING card
+wait 0.2
+screenshot combohint-hover-eng
+combohint_test unhover-effect
+wait 0.1
+combohint_test tip-gone
+combohint_test hover-effect bubble CARD.FLANKING card
+combohint_test free-bubble
+wait 0.2
+combohint_test tip-gone
+combohint_test clear
+wait 0.4
+combohint_test hover-next
+card MALAISE
+card DEBILITATE
+card EXPOSE
+wait 0.8
+combohint_test contains Expose
+combohint_test contains Vulnerable
+combohint_test bubble-contains Expose
+combohint_test bubble-contains Vulnerable
+combohint_test hover-effect overlay p0.WEAKENING
+wait 0.2
+screenshot combohint-overlay-weakening-eng
+combohint_test unhover-effect
+wait 0.1
+combohint_test tip-gone
+combohint_test hover-effect bubble WEAKENING
+wait 0.2
+screenshot combohint-bubble-weakening-eng
+combohint_test unhover-effect
+wait 0.1
+combohint_test tip-gone
+combohint_test hover-effect overlay p0.DEBILITATE_POWER
+wait 0.2
+screenshot combohint-overlay-effect-eng
+combohint_test unhover-effect
+wait 0.1
+combohint_test tip-gone
+combohint_test hover-effect bubble DEBILITATE_POWER
+wait 0.2
+screenshot combohint-bubble-effect-eng
+combohint_test unhover-effect
+wait 0.1
+combohint_test tip-gone
+combohint_test hover-effect overlay p0.EXPOSE
+wait 0.2
+screenshot combohint-overlay-expose-eng
+combohint_test unhover-effect
+wait 0.1
+combohint_test tip-gone
+combohint_test hover-effect bubble EXPOSE
+wait 0.2
+screenshot combohint-bubble-expose-eng
+combohint_test unhover-effect
+wait 0.1
+combohint_test tip-gone
+combohint_test hover-effect overlay p0.WEAK_POWER
+combohint_test settings false true true
+wait 0.2
+combohint_test tip-gone
+combohint_test settings true true true
+wait 0.3
+combohint_test hover-effect overlay p0.WEAKENING
+combohint_test clear
+wait 0.3
+combohint_test tip-gone
+combohint_test config-menu
+wait 0.4
+screenshot combohint-config-collapsed-eng
+combohint_test config-expand
+wait 0.4
+screenshot combohint-config-expanded-eng
+combohint_test config-scroll
+wait 0.2
+screenshot combohint-config-effects-eng
+combohint_test config-hover
+wait 0.3
+combohint_test config-hover-visible
+screenshot combohint-config-tooltip-eng
+combohint_test config-close
+wait 0.2
+combohint_test complete

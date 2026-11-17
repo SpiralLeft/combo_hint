@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Runtime/**/*.cs" />
+    <Compile Remove="Scenarios/**/*.cs" />
+    <Compile Include="../src/Rules/*.cs" LinkBase="Rules" />
+    <Compile Include="../src/Combat/BubbleDebouncer.cs" Link="BubbleDebouncer.cs" />
+    <Compile Include="../src/Config/LegacySettings.cs" Link="LegacySettings.cs" />
+    <None Include="../combo_hint.config.json" Link="combo_hint.config.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Fixtures/WeakVulnerableReview.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Fixtures/RemainingEffectsReview.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Fixtures/CharacterEffectsReview.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

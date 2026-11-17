@@ -38,3 +38,11 @@ build.bat
 
 # Runtime debug logs
 combo_hint.ui.log
+.godot/
+local.props
+combo_hint.inject.log
+
+# Local research notes and generated documentation artifacts
+/docs/local/
+/docs/artifacts/
+/.research/

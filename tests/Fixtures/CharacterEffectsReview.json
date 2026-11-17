@@ -1,0 +1,395 @@
+{
+  "game_version": "v0.113.1",
+  "cards": [
+    {
+      "entry": "ACCELERANT",
+      "model_id": "CARD.ACCELERANT",
+      "title_zh": "触媒",
+      "title_en": "Accelerant",
+      "groups": [],
+      "basic_zh": "[gold]中毒[/gold]会额外触发1次。",
+      "upgraded_zh": "[gold]中毒[/gold]会额外触发2次。",
+      "basic_en": "[gold]Poison[/gold] is triggered 1 additional time.",
+      "upgraded_en": "[gold]Poison[/gold] is triggered 2 additional times.",
+      "reason": "仅利用已有状态或对自己施加状态，不是敌方状态来源。"
+    },
+    {
+      "entry": "BLIGHT_STRIKE",
+      "model_id": "CARD.BLIGHT_STRIKE",
+      "title_zh": "荒疫打击",
+      "title_en": "Blight Strike",
+      "groups": [
+        "doom"
+      ],
+      "basic_zh": "造成8点伤害。\n给予等量于所造成伤害的[gold]灾厄[/gold]。",
+      "upgraded_zh": "造成10点伤害。\n给予等量于所造成伤害的[gold]灾厄[/gold]。",
+      "basic_en": "Deal 8 damage.\nApply [gold]Doom[/gold] equal to damage dealt.",
+      "upgraded_en": "Deal 10 damage.\nApply [gold]Doom[/gold] equal to damage dealt.",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "BOUNCING_FLASK",
+      "model_id": "CARD.BOUNCING_FLASK",
+      "title_zh": "弹跳药瓶",
+      "title_en": "Bouncing Flask",
+      "groups": [
+        "poison"
+      ],
+      "basic_zh": "随机给予敌人3层[gold]中毒[/gold]3次。",
+      "upgraded_zh": "随机给予敌人3层[gold]中毒[/gold]4次。",
+      "basic_en": "Apply 3 [gold]Poison[/gold] to a random enemy 3 times.",
+      "upgraded_en": "Apply 3 [gold]Poison[/gold] to a random enemy 4 times.",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "BUBBLE_BUBBLE",
+      "model_id": "CARD.BUBBLE_BUBBLE",
+      "title_zh": "咕嘟冒泡",
+      "title_en": "Bubble Bubble",
+      "groups": [
+        "poison"
+      ],
+      "basic_zh": "如果敌方拥有[gold]中毒[/gold]，则给予9层[gold]中毒[/gold]。",
+      "upgraded_zh": "如果敌方拥有[gold]中毒[/gold]，则给予12层[gold]中毒[/gold]。",
+      "basic_en": "If the enemy has [gold]Poison[/gold], apply 9 [gold]Poison[/gold].",
+      "upgraded_en": "If the enemy has [gold]Poison[/gold], apply 12 [gold]Poison[/gold].",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "CONCOCT",
+      "model_id": "CARD.CONCOCT",
+      "title_zh": "调制",
+      "title_en": "Concoct",
+      "groups": [],
+      "basic_zh": "选择另一名玩家，他在本回合内造成未被格挡的伤害时，给予3层[gold]中毒[/gold]。",
+      "upgraded_zh": "选择另一名玩家，他在本回合内造成未被格挡的伤害时，给予4层[gold]中毒[/gold]。",
+      "basic_en": "Choose another player. Whenever their Attacks deal unblocked damage this turn, they apply 3 [gold]Poison[/gold].",
+      "upgraded_en": "Choose another player. Whenever their Attacks deal unblocked damage this turn, they apply 4 [gold]Poison[/gold].",
+      "reason": "继续使用多人协同卡牌预览，不增加重复的中毒或灾厄效果标签。"
+    },
+    {
+      "entry": "CORROSIVE_WAVE",
+      "model_id": "CARD.CORROSIVE_WAVE",
+      "title_zh": "腐蚀波",
+      "title_en": "Corrosive Wave",
+      "groups": [
+        "poison"
+      ],
+      "basic_zh": "打出此牌后，你在本回合每抽到一张牌，就给予所有敌人2层[gold]中毒[/gold]。",
+      "upgraded_zh": "打出此牌后，你在本回合每抽到一张牌，就给予所有敌人3层[gold]中毒[/gold]。",
+      "basic_en": "Whenever you draw a card this turn, apply 2 [gold]Poison[/gold] to ALL enemies.",
+      "upgraded_en": "Whenever you draw a card this turn, apply 3 [gold]Poison[/gold] to ALL enemies.",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "COUNTDOWN",
+      "model_id": "CARD.COUNTDOWN",
+      "title_zh": "倒数计时",
+      "title_en": "Countdown",
+      "groups": [
+        "doom"
+      ],
+      "basic_zh": "在你的回合开始时，给予随机敌人6层[gold]灾厄[/gold]。",
+      "upgraded_zh": "在你的回合开始时，给予随机敌人9层[gold]灾厄[/gold]。",
+      "basic_en": "At the start of your turn, apply 6 [gold]Doom[/gold] to a random enemy.",
+      "upgraded_en": "At the start of your turn, apply 9 [gold]Doom[/gold] to a random enemy.",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "DEADLY_POISON",
+      "model_id": "CARD.DEADLY_POISON",
+      "title_zh": "致命毒药",
+      "title_en": "Deadly Poison",
+      "groups": [
+        "poison"
+      ],
+      "basic_zh": "给予5层[gold]中毒[/gold]。",
+      "upgraded_zh": "给予7层[gold]中毒[/gold]。",
+      "basic_en": "Apply 5 [gold]Poison[/gold].",
+      "upgraded_en": "Apply 7 [gold]Poison[/gold].",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "DEATH",
+      "model_id": "CARD.DEATH",
+      "title_zh": "死神",
+      "title_en": "Death",
+      "groups": [
+        "doom"
+      ],
+      "basic_zh": "给予75层[gold]灾厄[/gold]。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "给予99层[gold]灾厄[/gold]。\n[gold]消耗[/gold]。",
+      "basic_en": "Apply 75 [gold]Doom[/gold].\n[gold]Exhaust[/gold].",
+      "upgraded_en": "Apply 99 [gold]Doom[/gold].\n[gold]Exhaust[/gold].",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "DEATHBRINGER",
+      "model_id": "CARD.DEATHBRINGER",
+      "title_zh": "死亡使者",
+      "title_en": "Deathbringer",
+      "groups": [
+        "doom"
+      ],
+      "basic_zh": "给予所有敌人21层[gold]灾厄[/gold]和1层[gold]虚弱[/gold]。",
+      "upgraded_zh": "给予所有敌人26层[gold]灾厄[/gold]和1层[gold]虚弱[/gold]。",
+      "basic_en": "Apply 21 [gold]Doom[/gold] and 1 [gold]Weak[/gold] to ALL enemies.",
+      "upgraded_en": "Apply 26 [gold]Doom[/gold] and 1 [gold]Weak[/gold] to ALL enemies.",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "DEATHS_DOOR",
+      "model_id": "CARD.DEATHS_DOOR",
+      "title_zh": "死亡之门",
+      "title_en": "Death's Door",
+      "groups": [],
+      "basic_zh": "获得6点[gold]格挡[/gold]。\n如果你在本回合中曾给予过[gold]灾厄[/gold]，则额外获得2次[gold]格挡[/gold]。",
+      "upgraded_zh": "获得7点[gold]格挡[/gold]。\n如果你在本回合中曾给予过[gold]灾厄[/gold]，则额外获得2次[gold]格挡[/gold]。",
+      "basic_en": "Gain 6 [gold]Block[/gold].\nIf you applied [gold]Doom[/gold] this turn, gain [gold]Block[/gold] 2 additional times.",
+      "upgraded_en": "Gain 7 [gold]Block[/gold].\nIf you applied [gold]Doom[/gold] this turn, gain [gold]Block[/gold] 2 additional times.",
+      "reason": "仅利用已有状态或对自己施加状态，不是敌方状态来源。"
+    },
+    {
+      "entry": "DISLIKE_YOU",
+      "model_id": "CARD.DISLIKE_YOU",
+      "title_zh": "不喜欢你",
+      "title_en": "Dislike You",
+      "groups": [
+        "other"
+      ],
+      "basic_zh": "造成8点伤害。\n这名敌人在本回合从[gold]射击[/gold]中额外受到50%伤害。",
+      "upgraded_zh": "造成9点伤害。\n这名敌人在本回合从[gold]射击[/gold]中额外受到75%伤害。",
+      "basic_en": "Deal 8 damage.\nThe enemy takes 50% additional damage from [gold]Shots[/gold] this turn.",
+      "upgraded_en": "Deal 9 damage.\nThe enemy takes 75% additional damage from [gold]Shots[/gold] this turn.",
+      "reason": "敌方射击伤害增幅；与摧残同属 other，使用原生效果名和实际 50% / 75% 数值。"
+    },
+    {
+      "entry": "END_OF_DAYS",
+      "model_id": "CARD.END_OF_DAYS",
+      "title_zh": "末日降临",
+      "title_en": "End of Days",
+      "groups": [
+        "doom"
+      ],
+      "basic_zh": "给予所有敌人29层[gold]灾厄[/gold]。\n杀死所有[gold]灾厄[/gold]大于等于当前生命值的敌人。",
+      "upgraded_zh": "给予所有敌人37层[gold]灾厄[/gold]。\n杀死所有[gold]灾厄[/gold]大于等于当前生命值的敌人。",
+      "basic_en": "Apply 29 [gold]Doom[/gold] to ALL enemies.\nKill enemies with at least as much [gold]Doom[/gold] as HP.",
+      "upgraded_en": "Apply 37 [gold]Doom[/gold] to ALL enemies.\nKill enemies with at least as much [gold]Doom[/gold] as HP.",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "ENVENOM",
+      "model_id": "CARD.ENVENOM",
+      "title_zh": "涂毒",
+      "title_en": "Envenom",
+      "groups": [
+        "poison"
+      ],
+      "basic_zh": "每有一次攻击造成未被格挡的伤害，就给予1层[gold]中毒[/gold]。",
+      "upgraded_zh": "每有一次攻击造成未被格挡的伤害，就给予2层[gold]中毒[/gold]。",
+      "basic_en": "Whenever an Attack deals unblocked damage, apply 1 [gold]Poison[/gold].",
+      "upgraded_en": "Whenever an Attack deals unblocked damage, apply 2 [gold]Poison[/gold].",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "HAZE",
+      "model_id": "CARD.HAZE",
+      "title_zh": "迷雾",
+      "title_en": "Haze",
+      "groups": [
+        "poison"
+      ],
+      "basic_zh": "给予所有敌人4层[gold]中毒[/gold]和1层[gold]虚弱[/gold]。",
+      "upgraded_zh": "给予所有敌人6层[gold]中毒[/gold]和2层[gold]虚弱[/gold]。",
+      "basic_en": "Apply 4 [gold]Poison[/gold] and 1 [gold]Weak[/gold] to ALL enemies.",
+      "upgraded_en": "Apply 6 [gold]Poison[/gold] and 2 [gold]Weak[/gold] to ALL enemies.",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "MIRAGE",
+      "model_id": "CARD.MIRAGE",
+      "title_zh": "蜃景",
+      "title_en": "Mirage",
+      "groups": [],
+      "basic_zh": "获得等量于所有敌人[gold]中毒[/gold]层数总和的[gold]格挡[/gold]。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "获得等量于所有敌人[gold]中毒[/gold]层数总和的[gold]格挡[/gold]。",
+      "basic_en": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.\n[gold]Exhaust[/gold].",
+      "upgraded_en": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.",
+      "reason": "仅利用已有状态或对自己施加状态，不是敌方状态来源。"
+    },
+    {
+      "entry": "NEGATIVE_PULSE",
+      "model_id": "CARD.NEGATIVE_PULSE",
+      "title_zh": "负能量脉冲",
+      "title_en": "Negative Pulse",
+      "groups": [
+        "doom"
+      ],
+      "basic_zh": "获得5点[gold]格挡[/gold]。\n给予所有敌人7层[gold]灾厄[/gold]。",
+      "upgraded_zh": "获得6点[gold]格挡[/gold]。\n给予所有敌人11层[gold]灾厄[/gold]。",
+      "basic_en": "Gain 5 [gold]Block[/gold].\nApply 7 [gold]Doom[/gold] to ALL enemies.",
+      "upgraded_en": "Gain 6 [gold]Block[/gold].\nApply 11 [gold]Doom[/gold] to ALL enemies.",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "NEUROSURGE",
+      "model_id": "CARD.NEUROSURGE",
+      "title_zh": "精神过载",
+      "title_en": "Neurosurge",
+      "groups": [],
+      "basic_zh": "获得[img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img][img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img][img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img]。\n抽2张牌。\n在你的回合开始时，给予自身3层[gold]灾厄[/gold]。",
+      "upgraded_zh": "获得[img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img][img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img][img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img][img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img]。\n抽2张牌。\n在你的回合开始时，给予自身3层[gold]灾厄[/gold]。",
+      "basic_en": "Gain [img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img][img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img][img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img].\nDraw 2 cards.\nAt the start of your turn, apply 3 [gold]Doom[/gold] to yourself.",
+      "upgraded_en": "Gain [img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img][img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img][img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img][img]res://images/packed/sprite_fonts/necrobinder_energy_icon.png[/img].\nDraw 2 cards.\nAt the start of your turn, apply 3 [gold]Doom[/gold] to yourself.",
+      "reason": "仅利用已有状态或对自己施加状态，不是敌方状态来源。"
+    },
+    {
+      "entry": "NOXIOUS_FUMES",
+      "model_id": "CARD.NOXIOUS_FUMES",
+      "title_zh": "毒雾",
+      "title_en": "Noxious Fumes",
+      "groups": [
+        "poison"
+      ],
+      "basic_zh": "在你的回合开始时，给予所有敌人2层[gold]中毒[/gold]。",
+      "upgraded_zh": "在你的回合开始时，给予所有敌人3层[gold]中毒[/gold]。",
+      "basic_en": "At the start of your turn, apply 2 [gold]Poison[/gold] to ALL enemies.",
+      "upgraded_en": "At the start of your turn, apply 3 [gold]Poison[/gold] to ALL enemies.",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "NO_ESCAPE",
+      "model_id": "CARD.NO_ESCAPE",
+      "title_zh": "无处可逃",
+      "title_en": "No Escape",
+      "groups": [
+        "doom"
+      ],
+      "basic_zh": "给予10层[gold]灾厄[/gold]，敌人身上每有10层[gold]灾厄[/gold]，则额外给予这名敌人5层[gold]灾厄[/gold]。",
+      "upgraded_zh": "给予15层[gold]灾厄[/gold]，敌人身上每有10层[gold]灾厄[/gold]，则额外给予这名敌人5层[gold]灾厄[/gold]。",
+      "basic_en": "Apply 10 [gold]Doom[/gold], plus an additional 5 [gold]Doom[/gold] for every 10 [gold]Doom[/gold] already on this enemy.",
+      "upgraded_en": "Apply 15 [gold]Doom[/gold], plus an additional 5 [gold]Doom[/gold] for every 10 [gold]Doom[/gold] already on this enemy.",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "OBLIVION",
+      "model_id": "CARD.OBLIVION",
+      "title_zh": "湮灭",
+      "title_en": "Oblivion",
+      "groups": [
+        "doom"
+      ],
+      "basic_zh": "打出此牌后，你在本回合内每打出一张牌，就给予该敌人3层[gold]灾厄[/gold]。",
+      "upgraded_zh": "打出此牌后，你在本回合内每打出一张牌，就给予该敌人4层[gold]灾厄[/gold]。",
+      "basic_en": "Whenever you play a card this turn, apply 3 [gold]Doom[/gold] to the enemy.",
+      "upgraded_en": "Whenever you play a card this turn, apply 4 [gold]Doom[/gold] to the enemy.",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "OUTBREAK",
+      "model_id": "CARD.OUTBREAK",
+      "title_zh": "毒性爆发",
+      "title_en": "Outbreak",
+      "groups": [
+        "poison"
+      ],
+      "basic_zh": "给予所有敌人9层[gold]中毒[/gold]。\n立即触发[gold]中毒[/gold]。",
+      "upgraded_zh": "给予所有敌人12层[gold]中毒[/gold]。\n立即触发[gold]中毒[/gold]。",
+      "basic_en": "Apply 9 [gold]Poison[/gold] to ALL enemies.\n[gold]Poison[/gold] triggers immediately.",
+      "upgraded_en": "Apply 12 [gold]Poison[/gold] to ALL enemies.\n[gold]Poison[/gold] triggers immediately.",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "POISONED_STAB",
+      "model_id": "CARD.POISONED_STAB",
+      "title_zh": "带毒刺击",
+      "title_en": "Poisoned Stab",
+      "groups": [
+        "poison"
+      ],
+      "basic_zh": "造成6点伤害。\n给予3层[gold]中毒[/gold]。",
+      "upgraded_zh": "造成8点伤害。\n给予4层[gold]中毒[/gold]。",
+      "basic_en": "Deal 6 damage.\nApply 3 [gold]Poison[/gold].",
+      "upgraded_en": "Deal 8 damage.\nApply 4 [gold]Poison[/gold].",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "REAPER_FORM",
+      "model_id": "CARD.REAPER_FORM",
+      "title_zh": "死神形态",
+      "title_en": "Reaper Form",
+      "groups": [
+        "doom"
+      ],
+      "basic_zh": "每当你的攻击造成伤害时，同时给予等量的[gold]灾厄[/gold]。",
+      "upgraded_zh": "[gold]保留[/gold]。\n每当你的攻击造成伤害时，同时给予等量的[gold]灾厄[/gold]。",
+      "basic_en": "Whenever Attacks deal damage, apply that much [gold]Doom[/gold].",
+      "upgraded_en": "[gold]Retain[/gold].\nWhenever Attacks deal damage, apply that much [gold]Doom[/gold].",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "SCOURGE",
+      "model_id": "CARD.SCOURGE",
+      "title_zh": "鞭打",
+      "title_en": "Scourge",
+      "groups": [
+        "doom"
+      ],
+      "basic_zh": "给予13层[gold]灾厄[/gold]。\n抽1张牌。",
+      "upgraded_zh": "给予16层[gold]灾厄[/gold]。\n抽2张牌。",
+      "basic_en": "Apply 13 [gold]Doom[/gold].\nDraw 1 card.",
+      "upgraded_en": "Apply 16 [gold]Doom[/gold].\nDraw 2 cards.",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "SHROUD",
+      "model_id": "CARD.SHROUD",
+      "title_zh": "厄运之衣",
+      "title_en": "Shroud",
+      "groups": [],
+      "basic_zh": "每当你给予[gold]灾厄[/gold]时，获得3点[gold]格挡[/gold]。",
+      "upgraded_zh": "每当你给予[gold]灾厄[/gold]时，获得4点[gold]格挡[/gold]。",
+      "basic_en": "Whenever you apply [gold]Doom[/gold], gain 3 [gold]Block[/gold].",
+      "upgraded_en": "Whenever you apply [gold]Doom[/gold], gain 4 [gold]Block[/gold].",
+      "reason": "仅利用已有状态或对自己施加状态，不是敌方状态来源。"
+    },
+    {
+      "entry": "SNAKEBITE",
+      "model_id": "CARD.SNAKEBITE",
+      "title_zh": "蛇咬",
+      "title_en": "Snakebite",
+      "groups": [
+        "poison"
+      ],
+      "basic_zh": "[gold]保留[/gold]。\n给予7层[gold]中毒[/gold]。",
+      "upgraded_zh": "[gold]保留[/gold]。\n给予10层[gold]中毒[/gold]。",
+      "basic_en": "[gold]Retain[/gold].\nApply 7 [gold]Poison[/gold].",
+      "upgraded_en": "[gold]Retain[/gold].\nApply 10 [gold]Poison[/gold].",
+      "reason": "施加敌方状态；包括带条件、延迟或由自身行动触发的施加，提示不保证条件满足。"
+    },
+    {
+      "entry": "TIMES_UP",
+      "model_id": "CARD.TIMES_UP",
+      "title_zh": "大限已至",
+      "title_en": "Time's Up",
+      "groups": [],
+      "basic_zh": "造成等量于该敌人身上的[gold]灾厄[/gold]层数的伤害。",
+      "upgraded_zh": "[gold]保留[/gold]。\n造成等量于该敌人身上的[gold]灾厄[/gold]层数的伤害。",
+      "basic_en": "Deal damage equal to the enemy's [gold]Doom[/gold].",
+      "upgraded_en": "[gold]Retain[/gold].\nDeal damage equal to the enemy's [gold]Doom[/gold].",
+      "reason": "仅利用已有状态或对自己施加状态，不是敌方状态来源。"
+    },
+    {
+      "entry": "UNDERWORLD",
+      "model_id": "CARD.UNDERWORLD",
+      "title_zh": "幽冥之界",
+      "title_en": "Underworld",
+      "groups": [],
+      "basic_zh": "每当其他玩家在本回合造成攻击伤害时，给予敌人相等的[gold]灾厄[/gold]。\n[gold]消耗[/gold]。",
+      "upgraded_zh": "每当其他玩家在本回合造成攻击伤害时，给予敌人相等的[gold]灾厄[/gold]。",
+      "basic_en": "Whenever other players deal attack damage this turn, apply that much [gold]Doom[/gold].\n[gold]Exhaust[/gold].",
+      "upgraded_en": "Whenever other players deal attack damage this turn, apply that much [gold]Doom[/gold].",
+      "reason": "继续使用多人协同卡牌预览，不增加重复的中毒或灾厄效果标签。"
+    }
+  ]
+}
